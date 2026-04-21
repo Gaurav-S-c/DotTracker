@@ -1,10 +1,10 @@
 import express from "express"
-import formsRouter from "./routes/formRouter"
+import formsRouter from "../routes/formRouter.js"
 
 const app=express()
 const PORT=3000
 
-app.use(express.static('public'))
+app.use(express.json())
 
 app.use('/api/dashboard', formsRouter)
  

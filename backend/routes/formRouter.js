@@ -1,10 +1,12 @@
 import express from "express"
 
-import { getForm,insertData,updateForm,deleteForm} from "./controllers/applicationForm"
+import { getForm,insertData,updateForm,deleteForm} from "../controllers/applicationForm.js"
 
-export const formsRouter=express.router()
+const formsRouter=express.Router()
 
 formsRouter.get('/',getForm)
 formsRouter.post('/',insertData)
-formsRouter.patch('/id',updateForm)
-formsRouter.delete('/id',deleteForm)
+formsRouter.patch('/:id',updateForm)
+formsRouter.delete('/:id',deleteForm)
+
+export default formsRouter

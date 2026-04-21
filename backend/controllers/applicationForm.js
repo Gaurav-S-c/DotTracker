@@ -1,11 +1,10 @@
-import supabase from "./src/supabase-client.js"
+import supabase from "../src/supabase-client.js"
 
 export async function getForm(req,res){
     try{
         const {data,error}=await supabase
-            .from('application form')
+            .from('application_form')
             .select('*')
-            .eq('user_id',req.user.id)
             .order('created_at',{ascending:false})
 
         if(error)
@@ -18,13 +17,14 @@ export async function getForm(req,res){
 }
 
 export async function insertData(req,res){
-    const {company,role,job_type,status,Applied_Date,JD_URL,Notes}=req.body()
+    const {company,role,job_type,status,Applied_date,JD_URL,Notes}=req.body
     try{
         const {data,error}=await supabase
-            .from('application form')
+            .from('application_form')
             .insert([{
-                company,role,job_type,status,Applied_Date,JD_URL,Notes,user_id:req.user.id
+                company,role,job_type,status,Applied_date,JD_URL,Notes
             }])
+            .select()
 
         if(error)
             return res.status(400).json({ error: error.message });
@@ -38,10 +38,8 @@ export async function insertData(req,res){
 export async function updateForm(req,res){
     try{
         const {data,error}=await supabase
-            .from('application form')
+            .from('application_form')
             .update(req.body)
-            .eq('id',req.params.id)
-            .eq('user_id',req.user.id)
             .select()
 
         if(error)
@@ -56,15 +54,14 @@ export async function updateForm(req,res){
 export async function deleteForm(req,res){
     try{
         const {data,error}=await supabase
-            .from("application form")
+            .from("application_form")
             .delete()
             .eq('id', req.params.id)
-            .eq('user_id', req.user.id)
-
+            .select()
         if(error)
             return res.status(400).json({ error: error.message });
 
-        res.json(data)
+        res.json({ message: 'Deleted successfully' })
     }catch(error){
         res.status(500).json({error:error.message});
     }
