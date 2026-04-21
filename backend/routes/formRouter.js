@@ -2,7 +2,7 @@ import express from "express"
 
 import { getForm,insertData,updateForm,deleteForm} from "./controllers/applicationForm"
 
-const formsRouter=express.router()
+export const formsRouter=express.router()
 
 formsRouter.get('/',getForm)
 formsRouter.post('/',insertData)
