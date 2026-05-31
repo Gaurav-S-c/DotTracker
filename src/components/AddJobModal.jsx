@@ -30,8 +30,8 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
             company: formData.company,
             role: formData.role,
             status:formData.status || selectedColumn,
-            dateApplied: formData.dateApplied,
-            notes: formData.notes,
+            Applied_date: formData.Applied_date,
+            Notes: formData.Notes,
         }
         setjobs((prev)=>[
             ...prev,
@@ -109,8 +109,8 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                             <label className="font-medium">Date Applied</label>
                             <input
                                 type="date"
-                                name="dateApplied"
-                                value={formData.dateApplied}
+                                name="Applied_Date"
+                                value={formData.Applied_date}
                                 onChange={handleChange}
                                 className=" w-full mt-2 border rounded-xl p-3"
                             />
@@ -122,8 +122,8 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                         <label className="font-medium"> Notes</label>
                         <textarea
                             rows="4"
-                            name="notes"
-                            value={formData.notes}
+                            name="Notes"
+                            value={formData.Notes}
                             onChange={handleChange}
                             placeholder="Add notes..."
                             className="w-full mt-2 border rounded-xl p-3 resize-none"

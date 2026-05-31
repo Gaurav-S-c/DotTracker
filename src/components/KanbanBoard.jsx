@@ -69,20 +69,18 @@ export default function KanbanBoard(){
                             )
                             return (
                                 <div key={col.id} className={`w-60 ${col.bColor} shrink-0 rounded-2xl border overflow-hidden`}  >
-                                    <div className={`${col.bgColor} p-4 flex justify-between iterms-center`}>
+                                    <div className={`${col.bgColor} p-4 flex justify-between items-center`}>
                                         <h3 className="font-bold">{col.label}</h3>
                                         <button className="text-xl" onClick={()=>{
-                                            console.log("clicked")
                                             setSelectedColumn(col.id)
                                             setShowModal(true)
-                                            console.log(showModal)
                                         }}>+</button>
                                     </div>
                                     <Droppable droppableId={col.id}>
                                         {(provided)=>(
                                             <div className="p-2 min-h-46" ref={provided.innerRef}{...provided.droppableProps}>
                                                 {columnJobs.length===0 ?(
-                                                    <>
+                                                    <div className="text-center">
                                                         <p>No applications yet.</p> 
                                                         <p className="text-xs text-gray-400 text-center px-4">
                                                             {col.id === 'wishlist'  && "Add jobs you're interested in for later."}
@@ -91,14 +89,14 @@ export default function KanbanBoard(){
                                                             {col.id === 'offers'     && 'Your offers will appear here.'}
                                                             {col.id === 'rejected'  && 'Rejections happen. Keep going.'}
                                                         </p>     
-                                                    </>
+                                                    </div>
                                                 ):(
                                                     columnJobs.map((job,index)=>(
                                                         <Draggable key={job.id} draggableId={job.id.toString()} index={index}>
 
                                                             {(provided)=>(
                                                                 <div ref={provided.innerRef}{...provided.draggableProps}{...provided.dragHandleProps} 
-                                                                    className={`mb-1 rounded-2xl border ${col.bColor} bg-white p-2 shadow-sm`}>
+                                                                    className={`mb-1 rounded-2xl border-2 ${col.bColor} bg-white p-2 shadow-sm`}>
                                                                     <h4 className="font-semibold">{job.company}</h4>
                                                                     <p className="text-sm text-gray-500">{job.role}</p>
                                                                 </div>
