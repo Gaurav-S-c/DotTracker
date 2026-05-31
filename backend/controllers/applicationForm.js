@@ -66,7 +66,7 @@ export async function deleteForm(req,res){
             .from("application_form")
             .delete()
             .eq('id', id)
-            eq('user_id', req.user.id)
+            .eq('user_id', req.user.id)
             .select()
         if(error)
             return res.status(400).json({ error: error.message });

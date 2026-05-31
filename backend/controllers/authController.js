@@ -27,7 +27,7 @@ export const signUpNewUser=async(req,res)=>{
         });
     }catch(error){
         console.error('Unexpected error during sign-up:',error.message);
-        return {error:error.message};
+        return res.status(500).json({ error: error.message })
     }
 }
 
@@ -62,7 +62,7 @@ export const logout=async(req,res)=>{
     const token = req.headers.authorization?.split(' ')[1]
 
     try{
-        const {error}=await supabase.auth.signOut();
+        const {error}=await supabase.auth.admin.signOut(token);
         if(error){
             return res.status(400).json({error:error.message})
         }
