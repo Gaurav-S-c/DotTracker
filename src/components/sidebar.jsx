@@ -5,7 +5,7 @@ export default function Sidebar() {
 
   return (
     <header className='w-52 h-screen pt-8 p-4 border-r border-[#c5a6fb] flex flex-col items-center bg-[url("/sidebar-bg.png")] bg-cover bg-center bg-no-repeat'>
-      <Link to='/' className='flex items-center gap-2 pb-10 hover:text-[#7b45f1]'>
+      <Link to='/' className='flex items-center gap-2 pb-10 hover:text-[#4A00C9]'>
         <Goal className='size-10 stroke-[#6a2fea]'/>
         <span className='font-bold text-2xl'>DotTracker</span>
       </Link>

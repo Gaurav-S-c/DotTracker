@@ -1,11 +1,14 @@
-import { Sparkles,SquareKanban,ClipboardList, FileSearch ,FileText} from "lucide-react"
-import {Link, useNavigate} from "react-router-dom"
+import { Sparkles,SquareKanban,ClipboardList, FileSearch ,FileText,Goal} from "lucide-react"
+import {Link} from "react-router-dom"
 
 export default function Home(){
     return(
         <>
             <header className="flex justify-between px-8 items-center h-13 bg-[#fdf9ff] border-b border-[#f9e9fe] fixed top-0 left-0 w-full z-50">
-                <a href="#home" className="font-bold text-3xl text-[#4A00C9] cursor-pointer">DotTracker</a>
+                <div className="flex items-center gap-2">
+                    <Goal className='size-10 stroke-[#6a2fea]'/>
+                    <a href="#home" className="font-bold text-3xl text-[#4A00C9] cursor-pointer">DotTracker</a>
+                </div>
                 <div className="flex justify-between w-70 font-medium text-[#494456]">
                     <a href="#features" className="hover:text-[#4A00C9] hover:underline underline-offset-4 cursor-pointer">Features</a>
                     <a href="#about" className="hover:text-[#4A00C9] hover:underline underline-offset-4 cursor-pointer">About</a>

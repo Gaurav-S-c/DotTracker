@@ -23,9 +23,9 @@ export default function App(){
                 <Route path="/forgot-password" element={<ForgotPassword/>}/>
 
                 <Route path="/dashboard" element={
-                    <ProtectedRoute>
+                    //<ProtectedRoute>
                         <Layout />
-                    </ProtectedRoute>
+                    //</ProtectedRoute>
                 }>
                     <Route index element={<Dashboard />}/>
                     <Route path="applications" element={<Applications />}/>
