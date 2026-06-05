@@ -1,7 +1,28 @@
-import { NavLink,Link } from 'react-router-dom'
-import {Goal,House,UserPen,FileUser} from 'lucide-react'
+import { NavLink,Link,useNavigate } from 'react-router-dom'
+import {Goal,House,UserPen,FileUser,LogOut} from 'lucide-react'
 
 export default function Sidebar() {
+  const navigate=useNavigate()
+
+  const handleLogout=async()=>{
+    try{
+        const token =localStorage.getItem('token')
+
+        await fetch('http://localhost:3000/api/auth/logout',{
+          method:'POST',
+          headers:{
+            'Authorization':`Bearer ${token}`
+          }
+        })
+    }
+    catch(err){
+        console.error('Logout error:', err)
+    }finally{
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      navigate('/')
+    }
+  }
 
   return (
     <header className='w-52 h-screen pt-8 p-4 border-r border-[#c5a6fb] flex flex-col items-center bg-[url("/sidebar-bg.png")] bg-cover bg-center bg-no-repeat'>
@@ -29,6 +50,10 @@ export default function Sidebar() {
           Profile
         </NavLink>
       </nav>
+      <button onClick={handleLogout} className="flex items-center gap-3 font-bold cursor-pointer w-35 mt-auto border-3 border-red-800  text-[#9F0712] rounded-xl px-3 py-2 hover:bg-red-800 hover:text-white transition-colors">
+        <LogOut className='size-5'/>
+        Logout
+      </button>
     </header>
   )
 }

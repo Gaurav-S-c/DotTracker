@@ -1,7 +1,8 @@
 import { Sparkles,SquareKanban,ClipboardList, FileSearch ,FileText,Goal} from "lucide-react"
-import {Link} from "react-router-dom"
+import {Link,useNavigate} from "react-router-dom"
 
 export default function Home(){
+
     return(
         <>
             <header className="flex justify-between px-8 items-center h-13 bg-[#fdf9ff] border-b border-[#f9e9fe] fixed top-0 left-0 w-full z-50">
@@ -28,7 +29,7 @@ export default function Home(){
                         <h1 className="font-bold text-4xl leading-tight mb-5">Track your job search,<br/> stay focused ,<span className="text-[#4A00c9]">get hired.</span></h1>
                         <p className="text-[#494456] mt-6 text-xl max-w-xl mb-5">Say goodbye to spreadsheets. DotTracker helps you organise applications ,track progress and manage resume all in one place ,so you can focus on what matters.</p>
                         <div className="mt-8 flex gap-4 mb-5">
-                            <Link to="/login" className="p-3 rounded-xl border-2 border-[#9e78fd] text-[#5320D9] text-lg hover:text-[white] hover:bg-[#9e78fd] cursor-pointer">Get Started</Link>
+                            <Link to="/register" className="p-3 rounded-xl border-2 border-[#9e78fd] text-[#5320D9] text-lg hover:text-[white] hover:bg-[#9e78fd] cursor-pointer">Get Started</Link>
                             <Link to="/dashboard" className="p-3 rounded-xl border-2 border-[#9e78fd] text-[#5320D9] text-lg hover:text-[white] hover:bg-[#9e78fd] cursor-pointer">View Dashboard</Link>
                         </div>
                     </div>
@@ -80,7 +81,7 @@ export default function Home(){
                             <h1 className="font-bold text-3xl pb-5">Built for job seekers, <br/> by job seekers.</h1>
                             <p className="text-[#494456] font-medium pb-5">DotTracker was created to solve a simple problem:<br/>job searching can get messy and overwhelming.</p>
                             <p className="text-[#494456] font-medium pb-5 max-w-xl">We built DotTracker to bring clarity, consistency, and confidence to your journey-so you can stay organized and land the right opportunity.</p>
-                            <p className="max-w-lg text-[#494456] font-medium pb-5"><span className="text-[#6846DF] font-bold">Our Mission</span> <br/>To empower jon seekers with a simple and beautiful tool that turns chaos into clarity.</p>
+                            <p className="max-w-lg text-[#494456] font-medium pb-5"><span className="text-[#6846DF] font-bold">Our Mission</span> <br/>To empower job seekers with a simple and beautiful tool that turns chaos into clarity.</p>
                         </div> 
                         <div className="w-1/2">
                             <img src="/herofooter.png" alt="Footer Image" className=" w-full h-auto object-cover rounded-3xl"/>

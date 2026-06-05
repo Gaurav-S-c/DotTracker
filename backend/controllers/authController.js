@@ -26,7 +26,6 @@ export const signUpNewUser=async(req,res)=>{
             user: data.user,
         });
     }catch(error){
-        console.error('Unexpected error during sign-up:',error.message);
         return res.status(500).json({ error: error.message })
     }
 }
@@ -52,8 +51,7 @@ export const signInUser=async(req,res)=>{
             user: data.user,
             });
     }catch(error){
-        console.error('Unexpected error during sign-in:', error.message);
-        return { success: false, error: 'An unexpected error occurred. Please try again.' }
+        return res.status(500).json({ error: error.message })
     }
 }
 
@@ -68,8 +66,7 @@ export const logout=async(req,res)=>{
         }
         return res.status(200).json({ message: 'Logged out successfully' })
     }catch(error){
-        console.error('Unexpected error during sign-out:', error.message);
-      return { success: false, error: 'An unexpected error occurred during sign out.' };
+        return res.status(500).json({ error: error.message })
     } 
 }
 
@@ -84,8 +81,7 @@ export const forgotPassword=async(req,res)=>{
         if (error) return res.status(400).json({ error: error.message });
         return res.status(200).json({ message: 'Password reset email sent' });
     }catch(error){
-        console.error('Unexpected error during reset:', error.message);
-        return { success: false, error: 'An unexpected error occurred during password reset.' };
+        return res.status(500).json({ error: error.message })
     }
 }
 

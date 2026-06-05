@@ -42,6 +42,9 @@ export default function Dashboard(){
         },
 ]
 
+const user=JSON.parse(localStorage.getItem('user'))
+const name=user?.user_metadata?.name || 'User'
+
 
 function Statcard({Icon,value,label,bgColor,iconColor,bColor,iconBg}){
     return(
@@ -59,7 +62,7 @@ function Statcard({Icon,value,label,bgColor,iconColor,bColor,iconBg}){
         <>
             <header className="flex justify-between mb-8">
                 <div>
-                    <h1 className="text-5xl font-bold pb-2">Welcome User!</h1>
+                    <h1 className="text-5xl font-bold pb-2">Welcome {name}!</h1>
                     <span className="text-xl font-medium">Here's what's happening with your job search.</span>
                 </div>
                 <img src="/profile.png" alt="profile placeholder."  className="size-25"/>
