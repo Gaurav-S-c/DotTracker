@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useState,useEffect} from "react"
 import {DragDropContext,Droppable,Draggable} from "@hello-pangea/dnd"
 import AddJobModal from "./AddJobModal"
 
@@ -36,16 +36,36 @@ const columns=[
 ]
 
 export default function KanbanBoard(){
-
+    
     const [jobs,setjobs]=useState([])
-
     const [showModal,setShowModal]=useState(false)
     const [selectedColumn,setSelectedColumn]=useState(null)
+    const [loading,setLoading]=useState(true)
 
-    function handleDragEnd(result){
+    useEffect(()=>{
+        async function fetchJobs(){
+            try{
+                const token=localStorage.getItem('token')
+                const response=await fetch('http://localhost:3000/api/dashboard',{
+                    headers:{'Authorization':`Bearer ${token}`}
+                })
+                const data=await response.json()
+                if(response.ok){
+                    setjobs(data)
+                }
+            }
+            catch(err){
+                console.error('Failed to fetch jobs:', err)
+            }finally {
+                setLoading(false)
+            }
+        }
+        fetchJobs()
+    },[])
+
+    async function handleDragEnd(result){
         if(!result.destination) return 
         const jobId=result.draggableId
-
         const newStatus=result.destination.droppableId
 
         setjobs((prev)=>
@@ -56,7 +76,23 @@ export default function KanbanBoard(){
                 } :
                 job   
             ))
+
+        try{
+            const token=localStorage.getItem('token')
+            await fetch(`http://localhost:3000/api/dashboard/${jobId}`,{
+                method:'PATCH',
+                header:{
+                    'Content-Type':'application/json',
+                    'Authorization':'Bearer ${token}'
+                },
+                body:JSON.stringify({status:newStatus})
+            })
+        }catch(err){
+            console.error('Failed to update status:', err)
+        }
     }
+    
+    if (loading) return <p className="text-center mt-8 text-gray-400">Loading your applications...</p>
 
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
@@ -71,7 +107,7 @@ export default function KanbanBoard(){
                                 <div key={col.id} className={`w-60 ${col.bColor} shrink-0 rounded-2xl border overflow-hidden`}  >
                                     <div className={`${col.bgColor} p-4 flex justify-between items-center`}>
                                         <h3 className="font-bold">{col.label}</h3>
-                                        <button className="text-xl" onClick={()=>{
+                                        <button className="text-xl cursor-pointer" onClick={()=>{
                                             setSelectedColumn(col.id)
                                             setShowModal(true)
                                         }}>+</button>
