@@ -50,7 +50,7 @@ export default function Sidebar() {
           Profile
         </NavLink>
       </nav>
-      <button onClick={handleLogout} className="flex items-center gap-3 font-bold cursor-pointer w-35 mt-auto border-3 border-red-800  text-[#9F0712] rounded-xl px-3 py-2 hover:bg-red-800 hover:text-white transition-colors">
+      <button onClick={handleLogout} className="flex items-center gap-3 font-bold cursor-pointer w-35 mt-auto border-3 border-red-600 rounded-xl px-3 py-2 bg-red-600 text-white hover:bg-red-700 hover:border-red-700 hover:bg-transition-colors">
         <LogOut className='size-5'/>
         Logout
       </button>

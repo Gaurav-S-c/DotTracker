@@ -1,8 +1,18 @@
-import { Sparkles,SquareKanban,ClipboardList, FileSearch ,FileText,Goal} from "lucide-react"
+import { Sparkles,SquareKanban,ClipboardList, FileSearch ,FileText,Goal,LogOut} from "lucide-react"
 import {Link,useNavigate} from "react-router-dom"
+import { useState } from "react"
 
 export default function Home(){
+const navigate=useNavigate()
+const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'))
 
+    const handleLogOut=()=>{
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        setIsLoggedIn(false)
+        Navigate('/')
+    }
+    
     return(
         <>
             <header className="flex justify-between px-8 items-center h-13 bg-[#fdf9ff] border-b border-[#f9e9fe] fixed top-0 left-0 w-full z-50">
@@ -16,8 +26,17 @@ export default function Home(){
                     <Link to="/dashboard" className="hover:text-[#4A00C9] hover:underline underline-offset-4 cursor-pointer">Dashboard</Link>
                 </div>
                 <div className="flex justify-between w-35 font-medium text-[#494456]">
-                    <Link to="/login" className="cursor-pointer rounded-full hover:bg-[#4A00C9] px-2 py-1 hover:text-[#FDF7FF]">Sign In</Link>
-                    <Link to="/register" className="cursor-pointer rounded-full hover:bg-[#4A00C9] px-2 py-1 hover:text-[#FDF7FF]">Sign Up</Link>
+                    {isLoggedIn ? (
+                        <button onClick={handleLogOut} className="flex items-center gap-3 cursor-pointer mt-auto border-3 border-red-500 rounded-full px-2 py-1 bg-red-500 text-white hover:bg-red-600 hover:border-red-600 hover:bg-transition-colors">
+                            Logout
+                            <LogOut/>
+                        </button>
+                    ):(
+                        <>
+                            <Link to="/login" className="cursor-pointer rounded-full hover:bg-[#4A00C9] px-2 py-1 hover:text-[#FDF7FF]">Sign In</Link>
+                            <Link to="/register" className="cursor-pointer rounded-full hover:bg-[#4A00C9] px-2 py-1 hover:text-[#FDF7FF]">Sign Up</Link>
+                        </>
+                    )}
                 </div>
             </header>
             <main className="bg-[#FBFBFD]">
