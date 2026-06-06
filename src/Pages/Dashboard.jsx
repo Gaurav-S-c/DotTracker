@@ -1,50 +1,7 @@
 import {BookCheck,Headset,Star,StarOff} from 'lucide-react'
 import KanbanBoard from '../components/KanbanBoard.jsx'
 import AddJobModal from '../components/AddJobModal.jsx'
-
-export default function Dashboard(){
-    const stats=[
-        {
-        icon:BookCheck,
-        value:20,
-        label:"Total Applied",
-        bgColor:"bg-[#F2EBFD]",
-        iconColor:"stroke-[#522B95]",
-        iconBg:"bg-[#CBADFC]",
-        bColor:"border-[#D7CDE6]"
-        },
-        {
-        icon:Headset,
-        value:12,
-        label:"Interviews",
-        bgColor:"bg-[#E2F7F0]",
-        iconColor:"stroke-[#031F10]",
-        iconBg:"bg-[#92E3C7]",
-        bColor:"border-[#C3E1D7]"
-        },
-        {
-        icon:Star,
-        value:3,
-        label:"Offers",
-        bgColor:"bg-[#FCF5E1]",
-        iconColor:"stroke-[#E89516]",
-        iconBg:"bg-[#FFDD96]",
-        bColor:"border-[#E9E1CA]"
-        },
-        {
-        icon:StarOff,
-        value:8,
-        label:"Rejected",
-        bgColor:"bg-[#FFE7E5]",
-        iconColor:"stroke-[#D62337]",
-        iconBg:"bg-[#FDB6B8]",
-        bColor:"border-[#D6BFC0]"
-        },
-]
-
-const user=JSON.parse(localStorage.getItem('user'))
-const name=user?.user_metadata?.name || 'User'
-
+import {useState,useEffect} from 'react'
 
 function Statcard({Icon,value,label,bgColor,iconColor,bColor,iconBg}){
     return(
@@ -57,6 +14,56 @@ function Statcard({Icon,value,label,bgColor,iconColor,bColor,iconBg}){
         </div>
     )
 }
+
+export default function Dashboard(){
+    const user=JSON.parse(localStorage.getItem('user'))
+    const name=user?.user_metadata?.name || 'User'
+
+    const [counts,setCounts]=useState({
+        total:0,
+        interviews:0,
+        offers:0,
+        rejected:0
+    })
+
+    const stats=[
+        {
+        icon:BookCheck,
+        value:counts.total,
+        label:"Total Applied",
+        bgColor:"bg-[#F2EBFD]",
+        iconColor:"stroke-[#522B95]",
+        iconBg:"bg-[#CBADFC]",
+        bColor:"border-[#D7CDE6]"
+        },
+        {
+        icon:Headset,
+        value:counts.interviews,
+        label:"Interviews",
+        bgColor:"bg-[#E2F7F0]",
+        iconColor:"stroke-[#031F10]",
+        iconBg:"bg-[#92E3C7]",
+        bColor:"border-[#C3E1D7]"
+        },
+        {
+        icon:Star,
+        value:counts.offers,
+        label:"Offers",
+        bgColor:"bg-[#FCF5E1]",
+        iconColor:"stroke-[#E89516]",
+        iconBg:"bg-[#FFDD96]",
+        bColor:"border-[#E9E1CA]"
+        },
+        {
+        icon:StarOff,
+        value:counts.rejected,
+        label:"Rejected",
+        bgColor:"bg-[#FFE7E5]",
+        iconColor:"stroke-[#D62337]",
+        iconBg:"bg-[#FDB6B8]",
+        bColor:"border-[#D6BFC0]"
+        },
+]
 
     return(
         <>
@@ -77,7 +84,7 @@ function Statcard({Icon,value,label,bgColor,iconColor,bColor,iconBg}){
                 })}
             </div>
             <main className='mt-8'>
-                <KanbanBoard />
+                <KanbanBoard onCountsChange={setCounts}/>
             </main>
         </>
     )

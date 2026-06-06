@@ -1,7 +1,7 @@
 import {useState} from "react"
 import {X} from 'lucide-react'
 
-export default function AddJobModal({showModal,setShowModal,selectedColumn,setjobs}){
+export default function AddJobModal({showModal,setShowModal,selectedColumn,setjobs,onJobAdded}){
     const [formData,setFormData]=useState({
         company:"",
         role:"",
@@ -56,10 +56,7 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                 return
             }
 
-            setjobs((prev)=>[
-               ...prev,
-               data[0]
-           ])
+            onJobAdded(data[0])
            
            setShowModal(false)
     
