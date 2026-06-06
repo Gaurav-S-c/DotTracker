@@ -5,12 +5,14 @@ import {useState,useEffect} from 'react'
 
 function Statcard({Icon,value,label,bgColor,iconColor,bColor,iconBg}){
     return(
-        <div className={`border-2 rounded-2xl ${bColor} ${bgColor} p-5`}>
-            <div className={`p-2 rounded-full w-fit ${iconBg}`}>
-                <Icon className={`size-8 ${iconColor}`}/>
+        <div className={`flex items-center justify-between border-2 rounded-2xl ${bColor} ${bgColor} p-3`}>
+            <div className='flex justify-items-start items-center gap-3'>
+                <div className={`p-2 rounded-full w-fit ${iconBg}`}>
+                    <Icon className={`size-8 ${iconColor}`}/>
+                </div>
+                <span className='text-xl font-medium'>{label}</span>
             </div>
-            <p className='text-4xl font-bold'>{value}</p>
-            <p className='text-xl font-medium'>{label}</p>
+            <span className='text-3xl font-semibold'>{value}</span>
         </div>
     )
 }
@@ -69,13 +71,13 @@ export default function Dashboard(){
         <>
             <header className="flex justify-between mb-8">
                 <div>
-                    <h1 className="text-5xl font-bold pb-2">Welcome {name}!</h1>
-                    <span className="text-xl font-medium">Here's what's happening with your job search.</span>
+                    <h1 className="text-3xl font-bold">Welcome {name}!</h1>
+                    <span className="text-lg font-medium text-[#494456]">Here's what's happening with your job search.</span>
                 </div>
-                <img src="/profile.png" alt="profile placeholder."  className="size-25"/>
+                <img src="/profile.png" alt="profile placeholder."  className="size-18"/>
             </header>
 
-            <div className='grid grid-cols-4 gap-6'>
+            <div className='grid grid-cols-4 gap-4'>
                 {stats.map((stat)=>{
                     const Icon=stat.icon
                     return(

@@ -1,7 +1,7 @@
 import {useState,useEffect,useRef} from "react"
 import {DragDropContext,Droppable,Draggable} from "@hello-pangea/dnd"
 import AddJobModal from "./AddJobModal"
-import { EllipsisVertical,TriangleAlert} from "lucide-react"
+import { EllipsisVertical,TriangleAlert,Trash2,Pencil} from "lucide-react"
 
 const columns=[
     {
@@ -46,7 +46,7 @@ function calculateCounts(jobsList){
 }
 
 function JobCard({job,provided,col,onDelete}){
-    const [menuOpen,setMenuOpen]=useState(false)
+    const [showEdit, setShowEdit]= useState(false)
     const [showConfirm,setShowConfirm]=useState(false)
     const [deleting,setDeleting]=useState(false)
 
@@ -59,29 +59,45 @@ function JobCard({job,provided,col,onDelete}){
     return (
         <>
         <div ref={provided.innerRef}{...provided.draggableProps}{...provided.dragHandleProps} style={{...provided.draggableProps.style}}
-            className={`mb-1 rounded-2xl border-2 ${col.bColor} bg-white p-2 shadow-sm relative`}
+            className={`mb-2 rounded-xl border-2 ${col.bColor} bg-white p-2 shadow-sm relative`}
         >
             <div className="flex justify-between items-start">
-                <div>
-                    <h4 className="font-semibold">{job.company}</h4>
-                    <p className="text-sm text-[#494456]">{job.role}</p>
-                </div>
-                <button onClick={(e)=>{e.stopPropagation();setMenuOpen(!menuOpen)}} 
-                    className="text-gray-400 hover:text-[#494456] cursor-pointer text-lg leading-none px-1 h-10"
+                <h4 className="font-semibold text-md ">{job.company}</h4>
+                <div className="flex items-center gap-1 mt-1 shrink-0">
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setShowEdit(true) }}
+                        className="text-gray-400 hover:text-green-500 cursor-pointer transition-colors"
                     >
-                    <EllipsisVertical />
-                </button>
+                        <Pencil size={17}/>
+                    </button>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setShowConfirm(true) }}
+                        className="text-gray-400 hover:text-red-500 cursor-pointer transition-colors"
+                    >
+                        <Trash2 size={17}/>
+                    </button>
+                </div>
             </div>
-            {menuOpen && (
-            <div className="absolute right-2 top-10 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
-                <button
-                onClick={(e) => { e.stopPropagation(); setMenuOpen(false); setShowConfirm(true) }}
-                className="flex items-center gap-2 px-4 py-2 text-md text-red-500 hover:bg-red-50 w-full text-left cursor-pointer"
-                >
-                🗑 Delete
-                </button>
+            <p className="text-xs text-[#494456]">{job.role}</p>
+            <div className={`border-t border-dashed ${col.bColor} my-2`}/>
+            <div className="flex items-center justify-between">
+                {job.job_type && (
+                    <span
+                    style={{ backgroundColor: col.bgColor?.replace('bg-[', '').replace(']', '') }}
+                    className={`text-xs font-medium px-2 py-1 rounded-full ${col.bgColor}`}
+                    >
+                    {job.job_type}
+                    </span>
+                )}
+                {job.Applied_date && (
+                    <span className="text-sm text-gray-400">
+                    {new Date(job.Applied_date).toLocaleDateString('en-IN', {
+                        day:   'numeric',
+                        month: 'short'
+                    })}
+                    </span>
+                )}
             </div>
-            )}
         </div>
 
         {showConfirm && (
@@ -184,8 +200,10 @@ export default function KanbanBoard({ onCountsChange }){
                 headers:{'Authorization':`Bearer ${token}`}
             })
             if(response.ok){
-                const updateJobs=jobs.filter((job)=>job.id.toString()!==job.id.toString())
+                const updatedJobs=jobs.filter((job)=>job.id.toString()!==jobId.toString())
                 updateJobs(updatedJobs)
+            }else {
+                console.error('Delete failed')
             }
         }catch(err){
             console.error('failed to delete:',err)
@@ -202,14 +220,13 @@ export default function KanbanBoard({ onCountsChange }){
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
             <section className="mt-8">
-                <div className="overflow-x-auto custom-scrollbar">
-                    <div className="flex gap-6 min-w-max pb-4">
+                    <div className="flex gap-4 min-w-max pb-5">
                         {columns.map((col)=>{
                             const columnJobs=jobs.filter(
                                 (job)=>job.status===col.id
                             )
                             return (
-                                <div key={col.id} className={`w-60 ${col.bColor} shrink-0 rounded-2xl border overflow-hidden`}  >
+                                <div key={col.id} className={`w-56 ${col.bColor} shrink-0 rounded-2xl border-2 border-dashed overflow-hidden`}  >
                                     <div className={`${col.bgColor} p-4 flex justify-between items-center`}>
                                         <h3 className="font-bold">{col.label}</h3>
                                         <button className="text-xl cursor-pointer" onClick={()=>{
@@ -219,7 +236,7 @@ export default function KanbanBoard({ onCountsChange }){
                                     </div>
                                     <Droppable droppableId={col.id}>
                                         {(provided)=>(
-                                            <div className="p-2 min-h-46 max-h-46 overflow-y-auto" ref={provided.innerRef}{...provided.droppableProps}>
+                                            <div className="p-2 h-87 overflow-y-auto" ref={provided.innerRef}{...provided.droppableProps}>
                                                 {columnJobs.length===0 ?(
                                                     <div className="text-center">
                                                         <p>No applications yet.</p> 
@@ -254,7 +271,6 @@ export default function KanbanBoard({ onCountsChange }){
                             )
                         })}
                     </div>
-                </div>
                 <AddJobModal 
                     showModal={showModal}
                     setShowModal={setShowModal}

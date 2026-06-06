@@ -177,6 +177,7 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                                 value={formData.Applied_date}
                                 onChange={handleChange}
                                 className="w-full mt-2 border rounded-xl px-3 py-2 bg-violet-50"
+                                required
                             />
                         </div>
 
