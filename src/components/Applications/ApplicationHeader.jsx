@@ -1,16 +1,25 @@
-import {Search,ChevronDown,Sparkles} from 'lucide-react'
+import {Search,ChevronDown,Sparkles,Plus} from 'lucide-react'
 import {useState} from 'react'
 
 const STATUSES=['all','wishlist','applied','interview','offers','rejected']
 
-export default function ApplicationHeader({search,onSearch,statusFilter,onFilter}){
+export default function ApplicationHeader({search,onSearch,statusFilter,onFilter,onAddNew}){
     const [showFilter,setShowFilter]=useState(false)
 
     return (
         <div>
-            <div className='flex gap-2 items-center mb-4'>
-                <h1 className='text-3xl font-bold'>Applications</h1>
-                <Sparkles size={30}/>
+            <div className='flex items-center justify-between mb-4'>
+                <div className='flex gap-2 items-center'>
+                    <h1 className='text-3xl font-bold'>Applications</h1>
+                    <Sparkles size={30}/>
+                </div>
+                <button 
+                    onClick={onAddNew}
+                    className='flex items-center gap-2 px-3 py-2 bg-[#4A00C9] text-white text-sm font-medium rounded-xl hover:opacity-80 cursor-pointer transition-opacity'
+                >
+                    <Plus/>
+                    <span>Add New Application</span>
+                </button>
             </div>
             <hr className='border-t-2 border-[#c5a6fb]'/>
             <div className='flex gap-3 mt-4'>

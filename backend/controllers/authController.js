@@ -47,7 +47,8 @@ export const signInUser=async(req,res)=>{
         }
         return res.status(200).json({
             message: 'Login successful',
-            token: data.session.access_token,   // send this to frontend → store it → attach to every request
+            token: data.session.access_token,
+            refresh_token:  data.session.refresh_token, 
             user: data.user,
             });
     }catch(error){

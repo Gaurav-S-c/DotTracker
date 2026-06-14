@@ -3,25 +3,11 @@ import { useNavigate } from "react-router-dom"
 import { Trash2,Pencil,ChevronRight,ChevronLeft,TriangleAlert } from "lucide-react"
 
 const STATUS_STYLES = {
-  wishlist:  'border border-purple-400 text-purple-600',
-  applied:   'border border-yellow-400 text-yellow-600',
-  interview: 'border border-green-400  text-green-600',
-  offers:    'border border-teal-400   text-teal-600',
-  rejected:  'border border-red-400    text-red-500',
-}
-
-const AVATAR_COLORS = [
-  { bg: '#EDE9FE', text: '#6D28D9' },
-  { bg: '#DCFCE7', text: '#15803D' },
-  { bg: '#FEF3C7', text: '#D97706' },
-  { bg: '#FCE7F3', text: '#BE185D' },
-  { bg: '#E0F2FE', text: '#0369A1' },
-  { bg: '#FFE4E6', text: '#BE123C' },
-]
-
-function getAvatarColor(name){
-    const index=(name?.charCodeAt(0)||0)%AVATAR_COLORS.length
-    return AVATAR_COLORS[index]
+  wishlist:  'border border-[#75A0AD] bg-[#C0E4FC]',
+  applied:   'border border-[#9682AA] bg-[#F2EBFD]',
+  interview: 'border border-[#8EC7B4] bg-[#BFEECB]',
+  offers:    'border border-[#E4911F] bg-[#FFDD96]',
+  rejected:  'border border-[#C80F23] bg-[#FDCDCD]',
 }
 
 export default function ApplicationTable({jobs,onDelete,currentPage,setCurrentPage,rowsPerPage}){   
@@ -76,72 +62,78 @@ export default function ApplicationTable({jobs,onDelete,currentPage,setCurrentPa
                     <tbody>
                         {currentJobs.length===0 ?(
                             <tr>
-                                <td colSpan={6} className="text-center py-16 text-gray-400">
+                                <td colSpan={7} className="text-center py-16 text-gray-400">
                                     No Applications Found.
                                 </td>
                             </tr>
                         ):(
-                            currentJobs.map(job=>{
-                                const avatar=getAvatarColor(job.company)
-                                return(
-                                    <tr key={job.id} onClick={()=>navigate(`/dashboard/applications/${job.id}`)}
-                                    className="border-b border-gray-400 hover:bg-[#fdf7ff] transition-colors cursor-pointer"
-                                    >
-                                        <td className="px-5 py-3">        
-                                            <span className="font-semibold text-gray-900 text-base">{job.company.toUpperCase()}</span>
-                                        </td>
+                            currentJobs.map(job=>(
+                                <tr key={job.id} onClick={()=>navigate(`/dashboard/applications/${job.id}`)}
+                                className="border-b border-gray-400 hover:bg-[#fdf7ff] transition-colors cursor-pointer"
+                                >
+                                    <td className="px-5 py-3">
+                                        <div className="flex items-center gap-2">
+                                        {/* colored left bar */}
+                                        <div
+                                            className="w-1 h-8 rounded-full shrink-0"
+                                            style={{ backgroundColor: '#4A00C9' }}
+                                        />
+                                        <span className="font-bold text-base text-[#4A00C9] tracking-wide">
+                                            {job.company.toUpperCase()}
+                                        </span>
+                                        </div>
+                                    </td>
 
-                                        <td className="px-5 py-3 text-[#494456]">{job.role}</td>
+                                    <td className="px-5 py-3 text-[#494456]">{job.role}</td>
 
-                                        <td className="px-5 py-3">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${
-                                            STATUS_STYLES[job.status] || 'border border-gray-300 text-[#494456]'
-                                            }`}>
-                                                {job.status}
-                                            </span>
-                                        </td>
+                                    <td className="px-5 py-3">
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${
+                                        STATUS_STYLES[job.status] || 'border border-gray-300 text-[#494456]'
+                                        }`}>
+                                            {job.status}
+                                        </span>
+                                    </td>
 
-                                        <td className="px-5 py-3 text-[#494456]">
-                                            {job.Applied_date
-                                            ? new Date(job.Applied_date).toLocaleDateString('en-IN',{
-                                                day: 'numeric', month: 'short', year: 'numeric'
-                                            })
-                                            :'--'}
-                                        </td>
+                                    <td className="px-5 py-3 text-[#494456]">
+                                        {job.Applied_date
+                                        ? new Date(job.Applied_date).toLocaleDateString('en-IN',{
+                                            day: 'numeric', month: 'short', year: 'numeric'
+                                        })
+                                        :'--'}
+                                    </td>
 
-                                        <td className="px-5 py-3 text-[#494456]">
-                                            {job.job_type}
-                                        </td>
+                                    <td className="px-5 py-3 text-[#494456]">
+                                        {job.job_type}
+                                    </td>
 
-                                        <td className="px-5 py-3 text-[#494456] max-w-xs truncate">
-                                            {job.Notes || '—'}
-                                        </td>
-                                        <td className="px-5 py-3">
-                                            <div className="flex items-center gap-2">
-                                                <button
-                                                onClick={e => {
-                                                    e.stopPropagation()
-                                                    navigate(`/dashboard/applications/${job.id}?edit=true`)
-                                                }}
-                                                className="p-1.5 rounded-lg border border-green-300 text-green-400 hover:text-green-600 hover:bg-green-100 cursor-pointer transition-colors"
-                                                >
-                                                <Pencil size={15}/>
-                                                </button>
-                                                <button
-                                                onClick={e => {
-                                                    e.stopPropagation()
-                                                    setSelectedJob(job)
-                                                    setShowConfirm(true)
-                                                }}
-                                                className="p-1.5 rounded-lg border border-red-300 text-red-400 hover:text-red-600 hover:bg-red-100 cursor-pointer transition-colors"
-                                                >
-                                                <Trash2 size={15}/>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )
-                            })
+                                    <td className="px-5 py-3 text-[#494456] max-w-65 truncate">
+                                        {job.Notes || '—'}
+                                    </td>
+                                    <td className="px-5 py-3">
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                            onClick={e => {
+                                                e.stopPropagation()
+                                                navigate(`/dashboard/applications/${job.id}?edit=true`)
+                                            }}
+                                            className="p-1.5 rounded-lg border border-green-300 text-green-400 hover:text-green-600 hover:bg-green-100 cursor-pointer transition-colors"
+                                            >
+                                            <Pencil size={15}/>
+                                            </button>
+                                            <button
+                                            onClick={e => {
+                                                e.stopPropagation()
+                                                setSelectedJob(job)
+                                                setShowConfirm(true)
+                                            }}
+                                            className="p-1.5 rounded-lg border border-red-300 text-red-400 hover:text-red-600 hover:bg-red-100 cursor-pointer transition-colors"
+                                            >
+                                            <Trash2 size={15}/>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
                         )}
                     </tbody>
                 </table>

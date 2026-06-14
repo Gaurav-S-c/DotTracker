@@ -1,5 +1,6 @@
 import ApplicationHeader from "../components/Applications/ApplicationHeader"
 import ApplicationTable from "../components/Applications/ApplicationTable"
+import AddJobModal from "../components/AddJobModal"
 import {useState,useEffect} from 'react'
 
 const ROWS_PER_PAGE=7
@@ -10,6 +11,8 @@ export default function Applications(){
     const [search,setSearch]=useState('')
     const [statusFilter,setStatusFilter]=useState('all')
     const [currentPage,setCurrentPage]=useState(1)
+    const [showModal, setShowModal]   = useState(false)
+    const [selectedColumn, setSelectedColumn] = useState(null)
 
     useEffect(()=>{
         async function fetchJobs(){
@@ -33,10 +36,15 @@ export default function Applications(){
         fetchJobs()
     },[])
 
+    const handleJobAdded=(newJob)=>{
+        setJobs(prev=>[newJob,...prev])
+    }
+
     const filtered=jobs.filter(job=>{
         const matchSearch=(
             job.company?.toLowerCase().includes(search.toLowerCase())||
-            job.role?.toLowerCase().includes(search.toLowerCase())
+            job.role?.toLowerCase().includes(search.toLowerCase())||
+            job.job_type?.toLowerCase().includes(search.toLowerCase())
         )
         const matchStatus=statusFilter==='all'|| job.status===statusFilter
         return matchSearch && matchStatus
@@ -60,6 +68,10 @@ export default function Applications(){
                 onSearch={handleSearch}
                 statusFilter={statusFilter}
                 onFilter={handleFilter}
+                onAddNew={()=>{
+                    setSelectedColumn(null)
+                    setShowModal(true)
+                }}
             />
             <ApplicationTable
                 jobs={filtered}
@@ -67,6 +79,13 @@ export default function Applications(){
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 rowsPerPage={ROWS_PER_PAGE}
+            />
+            <AddJobModal
+                showModal={showModal}
+                setShowModal={setShowModal}
+                selectedColumn={selectedColumn}
+                setjobs={setJobs}
+                onJobAdded={handleJobAdded}
             />
         </div>
     )

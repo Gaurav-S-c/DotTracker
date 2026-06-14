@@ -1,5 +1,7 @@
 import React from "react"
 import { BrowserRouter,Routes,Route,Link,Navigate } from "react-router-dom"
+import { useEffect } from "react"
+import supabase from "./supabaseClient"
 
 import Home from "./Pages/Home"
 import SignIn from "./Pages/SignIn"
@@ -15,6 +17,41 @@ import Profile from "./Pages/Profile"
 import ProtectedRoute from "./components/ProtectedRoute"
 
 export default function App(){
+    async function restoreSession() {
+    const token = localStorage.getItem('token')
+    if (!token) return
+
+    // set the session in Supabase client so it can manage refresh
+    const { error } = await supabase.auth.setSession({
+      access_token:  token,
+      refresh_token: localStorage.getItem('refresh_token') || ''
+    })
+
+    if (error) {
+      console.error('Session restore failed:', error.message)
+    }
+  }
+
+    restoreSession()
+    useEffect(()=>{
+        const {data:listener}=supabase.auth.onAuthStateChange(
+            (event,session)=>{
+                if(event==='TOKEN_REFRESHED' && session){
+                    localStorage.setItem('token',session.access_token)
+                    localStorage.setItem('refresh_token', session.refresh_token)
+                    console.log('Token refreshed automatically')
+                }
+                if(event==='SIGNED_OUT'){
+                    localStorage.removeItem('token')
+                    localStorage.removeItem('refresh_token')
+                    localStorage.removeItem('user')
+                    window.location.href = '/login'
+                }
+            }
+        )
+        return () => listener.subscription.unsubscribe()
+    },[])
+
     return (
         <BrowserRouter>
             <Routes>

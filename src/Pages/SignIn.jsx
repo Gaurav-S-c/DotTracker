@@ -40,7 +40,8 @@ export default function SignIn(){
 
             localStorage.setItem('token',data.token)
             localStorage.setItem('user',JSON.stringify(data.user))
-
+            localStorage.setItem('refresh_token', data.refresh_token)
+            
             navigate("/dashboard")
         }
         catch(err){
