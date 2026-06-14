@@ -1,4 +1,5 @@
 import {useState,useEffect,useRef} from "react"
+import {useNavigate} from 'react-router-dom'
 import {DragDropContext,Droppable,Draggable} from "@hello-pangea/dnd"
 import AddJobModal from "./AddJobModal"
 import { EllipsisVertical,TriangleAlert,Trash2,Pencil} from "lucide-react"
@@ -49,6 +50,7 @@ function JobCard({job,provided,col,onDelete}){
     const [showEdit, setShowEdit]= useState(false)
     const [showConfirm,setShowConfirm]=useState(false)
     const [deleting,setDeleting]=useState(false)
+    const navigate=useNavigate()
 
     const handleDeleteClick=async()=>{
         setDeleting(true)
@@ -65,7 +67,10 @@ function JobCard({job,provided,col,onDelete}){
                 <h4 className="font-semibold text-md ">{job.company}</h4>
                 <div className="flex items-center gap-1 mt-1 shrink-0">
                     <button
-                        onClick={(e) => { e.stopPropagation(); setShowEdit(true) }}
+                        onClick={(e) => { 
+                            e.stopPropagation()
+                            navigate(`/dashboard/applications/${job.id}?edit=true`)
+                         }}
                         className="text-gray-400 hover:text-green-500 cursor-pointer transition-colors"
                     >
                         <Pencil size={17}/>

@@ -9,6 +9,7 @@ import ForgotPassword from "./Pages/ForgotPassword"
 import Layout from "./components/Layout"
 import Dashboard from "./Pages/Dashboard"
 import Applications from "./Pages/Applications"
+import ApplicationDetail from "./Pages/ApplicationDeatil"
 import Profile from "./Pages/Profile"
 
 import ProtectedRoute from "./components/ProtectedRoute"
@@ -29,6 +30,7 @@ export default function App(){
                 }>
                     <Route index element={<Dashboard />}/>
                     <Route path="applications" element={<Applications />}/>
+                    <Route path="applications/:id" element={<ApplicationDetail/>}/>
                     <Route path="profile" element={<Profile />}/>
                 </Route>
                 

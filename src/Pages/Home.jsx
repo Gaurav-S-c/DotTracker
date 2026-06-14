@@ -15,7 +15,7 @@ const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'))
     
     return(
         <>
-            <header className="flex justify-between px-8 items-center h-13 bg-[#fdf9ff] border-b border-[#f9e9fe] fixed top-0 left-0 w-full z-50">
+            <header className="flex justify-between px-8 items-center h-13 bg-[#fcf5ff] border-b border-[#f9e9fe] fixed top-0 left-0 w-full z-50">
                 <div className="flex items-center gap-2">
                     <Goal className='size-10 stroke-[#6a2fea]'/>
                     <a href="#home" className="font-bold text-3xl text-[#4A00C9] cursor-pointer">DotTracker</a>
