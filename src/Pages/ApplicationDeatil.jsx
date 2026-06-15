@@ -52,13 +52,16 @@ export default function ApplicationDetail(){
     const [deleting, setDeleting]     = useState(false)
     const [error, setError]           = useState('')
     const [form, setForm]             = useState({
-        company:      '',
-        role:         '',
-        job_type:     '',
-        status:       '',
-        Applied_date: '',
-        JD_URL:       '',
-        Notes:        '',
+        company:'',
+        role:'',
+        job_type:'',
+        status:'',
+        Applied_date:'',
+        JD_URL:'',
+        Notes:'',
+        work_mode:'',
+        job_location:'',
+        resume_url:'',
     })
 
     useEffect(()=>{
@@ -70,7 +73,7 @@ export default function ApplicationDetail(){
                 })
                 const data=await response.json()
                 if(response.ok){
-                    const found=data.find(j=j.id.toString()===id)
+                    const found=data.find(j=>j.id.toString()===id)
                     if(found){
                         setJob(found)
                         setForm({
@@ -81,6 +84,9 @@ export default function ApplicationDetail(){
                             Applied_date:found.Applied_date || '',
                             JD_URL:found.JD_URL || '',
                             Notes:found.Notes || '',
+                            resume_url:found.resume_url || '',
+                            work_mode:found.work_mode || '',
+                            job_location:found.job_location || '',
                         })
                     }
                 }
@@ -132,8 +138,11 @@ export default function ApplicationDetail(){
             Applied_date:job.Applied_date || '',
             JD_URL:job.JD_URL || '',
             Notes:job.Notes || '',
+            resume_url:job.resume_url || '',
+            work_mode:job.work_mode || '',
+            job_location:job.job_location || '',
         })
-        setLoading(false)
+        setEditing(false)
         setError('')
     }
 
@@ -157,8 +166,316 @@ export default function ApplicationDetail(){
     if (!job)    return <p className="text-center mt-8 text-gray-400">Application not found.</p>
 
     return(
-        <div>
-            <p>THis is application detail</p>
+        <div className="max-w-5xl">
+            <div className="mb-3">
+                <h1 className="text-3xl font-bold text-[#171A1D] mb-3">Application Details.</h1>
+                <button 
+                    onClick={()=>navigate('/dashboard/applications')}
+                    className="flex items-center gap-1 text-md text-gray-400 hover:text-[#4A00C9] mt-1 cursor-pointer transition-colors"
+                >
+                    <ArrowLeft size={14}/>
+                    <span>Back to applications.</span>
+                </button>
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 ml-40 max-h-[84vh] overflow-y-auto">
+                {error && (
+                    <p className="text-red-500 text-sm bg-red-100 px-4 py-2 rounded-xl mb-3">
+                        {error}
+                    </p>
+                )}
+                <div className="flex items-start gap-4 mb-4">
+                    <div
+                        className="w-14 h-14 rounded-xl flex items-center justify-center text-xl font-bold shrink-0"
+                        style={{ background: '#EDE9FE', color: '#4A00C9' }}
+                    >
+                        {(editing ? form.company:job.company)?.[0]?.toUpperCase() || '?'}
+                    </div>
+                    <div className="flex-1">
+                        <div className="flex justify-between items-center pr-5">
+                            <div>
+                                {editing ? (
+                                    <input
+                                        name='company'
+                                        value={form.company}
+                                        onChange={handleChange}
+                                        className="text-xl font-bold text-[#4A00C9] border-b-2 border-[#c5a6fb] focus:outline-none focus:border-[#8139ff] bg-transparent w-full mb-1"
+                                    />
+                                ):(
+                                    <h2 className="text-3xl font-bold text-[#4A00C9]">{job.company.toUpperCase()}</h2>
+                                )}
+                            </div>
+                            <div>
+                                {editing ? (
+                                    <input
+                                        name='role'
+                                        value={form.role}
+                                        onChange={handleChange}
+                                        className="text-xl font-bold text-[#4A00C9] border-b-2 border-[#c5a6fb] focus:outline-none focus:border-[#8139ff] bg-transparent w-full mb-1"
+                                    />
+                                ):(
+                                    <h2 className="text-xl font-bold text-[#4A00C9]">{job.role}</h2>
+                                )}
+                            </div>
+                        </div>
+                        <div>
+                            {editing ?(
+                                <select
+                                    name='status'
+                                    value={form.status}
+                                    onChange={handleChange}
+                                    className="border border-[#c5a6fb] rounded-full px-3 py-0.5 text-xs font-semibold focus:outline-none focus:border-[#4A00C9] text-[#4A00C9]"
+                                >
+                                    <option value="wishlist">Wishlist</option>
+                                    <option value="applied">Applied</option>
+                                    <option value="interview">Interview</option>
+                                    <option value="offers">Offer</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                            ):(
+                                <span className={`inline-block px-3 py-0.5 rounded-full text-xs font-semibold capitalize ${
+                                    STATUS_STYLES[job.status] || 'border border-gray-300 text-gray-500'
+                                    }`}
+                                >
+                                        {job.status}
+                                    </span>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <hr className="border-gray-300 mb-4"/>
+
+                <div className="grid md:grid-cols-2 gap-4 mb-5">
+                    <div className="bg-gray-50 rounded-xl p-3">
+                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                            Date Applied
+                        </p>
+                        {editing ? (
+                        <input
+                            type="date"
+                            name="Applied_date"
+                            value={form.Applied_date}
+                            onChange={handleChange}
+                            className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9]"
+                        />
+                        ) : (
+                        <p className="text-gray-700 font-medium">
+                            {job.Applied_date
+                            ? new Date(job.Applied_date).toLocaleDateString('en-IN', {
+                                day: 'numeric', month: 'long', year: 'numeric'
+                                })
+                            : '—'}
+                        </p>
+                        )}
+                    </div>
+                    <div className="bg-gray-50 rounded-xl p-3">
+                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                        Job Type
+                        </p>
+                        {editing ? (
+                        <select
+                            name="job_type"
+                            value={form.job_type}
+                            onChange={handleChange}
+                            className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9]"
+                        >
+                            <option value="">Select type</option>
+                            <option value="full-time">Full Time</option>
+                            <option value="part-time">Part Time</option>
+                            <option value="internship">Internship</option>
+                            <option value="contract">Contract</option>
+                            <option value="freelance">Freelance</option>
+                        </select>
+                        ) : (
+                        <p className="text-gray-700 font-medium capitalize">
+                            {job.job_type || '—'}
+                        </p>
+                        )}
+                    </div>
+
+                    <div className="bg-gray-50 rounded-xl p-3">
+                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                            Job Location
+                        </p>
+                        {editing ? (
+                        <input
+                            name="job_location"
+                            value={form.job_location}
+                            onChange={handleChange}
+                            placeholder='e.g. Bangalore...'
+                            className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9]"
+                        />
+                        ) : (
+                        <p className="text-gray-700 font-medium">
+                           📍{job.job_location || '—'}
+                        </p>
+                        )}
+                    </div>
+
+                    <div className="bg-gray-50 rounded-xl p-3">
+                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                            Work Mode
+                        </p>
+                        {editing ? (
+                        <select
+                            name="work_mode"
+                            value={form.work_mode}
+                            onChange={handleChange}
+                            className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9]"
+                        >
+                            <option value="">Select mode</option>
+                            <option value="remote">Remote</option>
+                            <option value="hybrid">Hybrid</option>
+                            <option value="onsite">Onsite</option>
+                        </select>
+                        ) : (
+                        <p className="text-gray-700 font-medium">
+                           💼{job.work_mode || '—'}
+                        </p>
+                        )}
+                    </div>
+
+                    <div className="bg-gray-50 rounded-xl p-3">
+                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                        Job Description URL
+                        </p>
+                        {editing ? (
+                        <input
+                            type="url"
+                            name="JD_URL"
+                            value={form.JD_URL}
+                            onChange={handleChange}
+                            placeholder="https://..."
+                            className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9]"
+                        />
+                        ) : (
+                        job.JD_URL ? (
+                            <a
+                                href={job.JD_URL}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-[#4A00C9] hover:underline text-sm"
+                            >
+                            View Job Description ↗
+                            </a>
+                        ) : (
+                            <p className="text-gray-700 font-medium">—</p>
+                        )
+                        )}
+                    </div>
+
+                    <div className="bg-gray-50 rounded-xl p-3">
+                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                        Resume URL
+                        </p>
+                        {editing ? (
+                        <input
+                            type="url"
+                            name="Resume_URL"
+                            value={form.Resume_url}
+                            onChange={handleChange}
+                            placeholder="https://..."
+                            className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9]"
+                        />
+                        ) : (
+                        job.JD_URL ? (
+                            <a
+                                href={job.resume_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-[#4A00C9] hover:underline text-sm"
+                            >
+                            View Resume Description ↗
+                            </a>
+                        ) : (
+                            <p className="text-gray-700 font-medium">—</p>
+                        )
+                        )}
+                    </div>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-4 mb-6">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+                        Notes
+                    </p>
+                    {editing ? (
+                        <textarea
+                        name="Notes"
+                        value={form.Notes}
+                        onChange={handleChange}
+                        rows={4}
+                        placeholder="Add your notes here..."
+                        className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9] resize-none bg-white"
+                        />
+                    ) : (
+                        <p className="text-gray-700 text-sm leading-relaxed">
+                        {job.Notes || 'No notes added yet.'}
+                        </p>
+                    )}
+                </div>
+
+                {editing ? (
+                    <div className="flex justify-end gap-3">
+                        <button
+                        onClick={handleCancel}
+                        className="flex items-center gap-2 px-5 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 cursor-pointer"
+                        >
+                        <X size={14}/> Cancel
+                        </button>
+                        <button
+                        onClick={handleSave}
+                        disabled={saving}
+                        className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#4A00C9] text-white text-sm font-medium hover:opacity-90 disabled:opacity-60 cursor-pointer"
+                        >
+                        <Check size={14}/> {saving ? 'Saving...' : 'Save Changes'}
+                        </button>
+                    </div>
+                    ) : (
+                    <div className="flex justify-end gap-3">
+                        <button
+                        onClick={() => setEditing(true)}
+                        className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#4A00C9] text-white text-sm font-medium hover:opacity-90 cursor-pointer"
+                        >
+                        <Pencil size={14}/> Edit
+                        </button>
+                        <button
+                        onClick={() => setShowConfirm(true)}
+                        className="flex items-center gap-2 px-5 py-2 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 cursor-pointer"
+                        >
+                        <Trash2 size={14}/> Delete
+                        </button>
+                    </div>
+                    )}
+            </div>
+            {showConfirm && (
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+                <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4">
+                    <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+                    <TriangleAlert size={28} color="#FFAB03"/>
+                    </div>
+                    <h3 className="text-lg font-bold text-center mb-2">Delete Application?</h3>
+                    <p className="text-center text-gray-500 text-sm mb-6">
+                    Are you sure you want to delete{' '}
+                    <span className="font-semibold text-gray-800">{job.company}</span>?
+                    This cannot be undone.
+                    </p>
+                    <div className="flex gap-3">
+                    <button
+                        onClick={() => setShowConfirm(false)}
+                        className="flex-1 py-2 rounded-xl border-2 border-gray-200 font-medium text-gray-600 hover:bg-gray-50 cursor-pointer"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleDelete}
+                        disabled={deleting}
+                        className="flex-1 py-2 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 disabled:opacity-60 cursor-pointer"
+                    >
+                        {deleting ? 'Deleting...' : 'Yes, Delete'}
+                    </button>
+                    </div>
+                </div>
+                </div>
+            )}
         </div>
     )
 }

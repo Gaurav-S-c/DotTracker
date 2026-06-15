@@ -54,8 +54,9 @@ export default function ApplicationTable({jobs,onDelete,currentPage,setCurrentPa
                             <th className="text-left px-5 py-3 font-bold text-base">Role</th>
                             <th className="text-left px-5 py-3 font-bold text-base">Status</th>
                             <th className="text-left px-5 py-3 font-bold text-base">Date Applied</th>
+                            <th className="text-left px-5 py-3 font-bold text-base">Location</th>
+                            <th className="text-left px-5 py-3 font-bold text-base">Work Mode</th>
                             <th className="text-left px-5 py-3 font-bold text-base">Job Type</th>
-                            <th className="text-left px-5 py-3 font-bold text-base">Notes</th>
                             <th className="text-left px-5 py-3 font-bold text-base">Actions</th>
                         </tr>
                     </thead>
@@ -101,14 +102,19 @@ export default function ApplicationTable({jobs,onDelete,currentPage,setCurrentPa
                                         })
                                         :'--'}
                                     </td>
+                                    
+                                    <td className="px-5 py-3 text-[#494456] capitalize">
+                                        {job.job_location || '—'}
+                                    </td>
 
+                                    <td className="px-5 py-3 text-[#494456] capitalize">
+                                        {job.work_mode || '—'}
+                                    </td>
+                                    
                                     <td className="px-5 py-3 text-[#494456]">
                                         {job.job_type}
                                     </td>
 
-                                    <td className="px-5 py-3 text-[#494456] max-w-65 truncate">
-                                        {job.Notes || '—'}
-                                    </td>
                                     <td className="px-5 py-3">
                                         <div className="flex items-center gap-2">
                                             <button

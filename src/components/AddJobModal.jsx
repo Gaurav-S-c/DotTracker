@@ -9,7 +9,10 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
         status:"",
         Applied_date:"",
         JD_URL:"",
-        Notes:""
+        Notes:"",
+        job_location:"",
+        work_mode:"",
+        resume_url:"",
     })
 
     const [loading,setLoading]=useState(false)
@@ -46,6 +49,9 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                     Applied_date:formData.Applied_date,
                     JD_URL:formData.JD_URL,
                     Notes:formData.Notes,
+                    resume_url:formData.resume_url,
+                    work_mode:formData.work_mode,
+                    job_location:formData.job_location,
                 })
             })
 
@@ -67,7 +73,10 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                status:"",
                Applied_date:"",
                JD_URL:"",
-               Notes:""
+               Notes:"",
+               job_location:"",
+               work_mode:"",
+               resume_url:""
            })
         }
         catch(err){
@@ -81,14 +90,14 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
 
     return (
         <div className="fixed inset-0 bg-black/40 flex backdrop-blur-sm items-center justify-center z-50 ">
-            <div className="w-full max-w-130 bg-[#FCFCFC] rounded-2xl shadow-xl overflow-hidden">
+            <div className="w-full max-w-180 bg-[#FCFCFC] rounded-2xl shadow-xl overflow-hidden">
                 <div className="flex items-center justify-between px-4 pt-4 pb-2 border-b">
                     <h2 className="text-3xl font-bold text-[#4A00C9]">New Application</h2>
                     <button onClick={()=>setShowModal(false)}><X/></button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-4 space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                         <div>
                             <label className="font-medium text-sm">
                                 Company Name
@@ -120,9 +129,21 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                                 required
                             />
                         </div>
+
+                        <div>
+                            <label className="font-medium text-sm">Job Location</label>
+                            <input
+                            type="text"
+                            name="job_location"
+                            value={formData.job_location}
+                            onChange={handleChange}
+                            placeholder="e.g. Bangalore, Mumbai"
+                            className="w-full mt-2 border rounded-xl px-3 py-2 bg-violet-50"
+                            />
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                         <div>
                             <label className="font-medium text-sm">
                                 Status
@@ -163,9 +184,23 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                             </select>
                         </div>
 
+                        <div>
+                            <label className="font-medium text-sm">Work Mode</label>
+                            <select
+                            name="work_mode"
+                            value={formData.work_mode}
+                            onChange={handleChange}
+                            className="w-full mt-2 border rounded-xl px-3 py-2 bg-violet-50"
+                            >
+                            <option value="">Select mode</option>
+                            <option value="remote">Remote</option>
+                            <option value="hybrid">Hybrid</option>
+                            <option value="onsite">Onsite</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                         <div>
                             <label className="font-medium text-sm">
                                 Date Applied
@@ -196,6 +231,17 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                             />
                         </div>
 
+                        <div>
+                            <label className="font-medium text-sm">Resume (PDF link)</label>
+                            <input
+                                type="url"
+                                name="resume_url"
+                                value={formData.resume_url}
+                                onChange={handleChange}
+                                placeholder="https://drive.google.com/your-resume.pdf"
+                                className="w-full mt-2 border rounded-xl px-3 py-2 bg-violet-50"
+                            />
+                        </div>
                     </div>
 
                     <div>
