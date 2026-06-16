@@ -86,6 +86,58 @@ export const forgotPassword=async(req,res)=>{
     }
 }
 
+export const updateName=async(req,res)=>{
+    const {name}=req.body;
+    if(!name)return res.status(400).json({error:"Name is required"})
+
+    try{
+        const {error}=await supabase.auth.admin.updateUserById(
+            req.user.id,
+            {user_metadata:{name}}
+        )
+        if(error)return res.status(400).json({error:error.message}),
+        res.json({message:'Name updated'})
+    }catch(err){
+        res.status(500).json({error:err.message})
+    }
+}
+
+export const changePassword = async(req,res)=>{
+    const{password}=req.body;
+    if(!password)return res.status(400).json({error:"Password is required"})
+
+    try{
+        const {error}=await supabase.auth.admin.updateUserById(
+            req,user,id,
+            {password}
+        )
+        if(error)return res.status(400).json({error:error.message}),
+        res.json({message:'Password Changes'})
+    }catch(err){
+        res.status(500).json({error:err.message})
+    }
+}
+
+export const deleteAccount=async(req,res)=>{
+    const { password } = req.body
+    if (!password) return res.status(400).json({ error:'Password required'})
+
+    try{
+        const {error:signInError}=await supabase.auth.signInWithPassword({
+            email:req.user.email,
+            password:password
+        })
+        if (signInError) return res.status(401).json({ error: 'Incorrect password' })
+
+        const { error } = await supabase.auth.admin.deleteUser(req.user.id)
+        if (error) return res.status(400).json({ error: error.message })
+
+        res.json({ message: 'Account deleted' })
+    }catch(err){
+        res.status(500).json({error:err.message})
+    }
+}
+
 export const getMe=async(req,res)=>{
     return res.status(200).json({user:req.user})
 }
