@@ -114,17 +114,10 @@ export default function Profile(){
                 </div>
                 <hr className='mb-3 mt-3 border-gray-300'/>
                 <div className='flex items-center gap-18'>
-                    <div className='w-25
-                            h-25
-                            rounded-full
-                            bg-[#4A00C9]
-                            text-white
-                            flex
-                            items-center
-                            justify-center
-                            text-6xl
-                            font-semibold
-                            shadow-lg'>{name?.[0]?.toUpperCase() || 'U'}</div>
+                    <div className='w-25 h-25 rounded-full bg-[#4A00C9] text-white flex items-center justify-center text-6xl font-semibold shadow-lg'
+                    >
+                        {name?.[0]?.toUpperCase() || 'U'}
+                    </div>
                     <div className='grid grid-cols-3 gap-x-10 flex-1'>
                         <div>
                             <div className='flex items-center justify-between mb-2 px-2'>

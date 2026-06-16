@@ -2,6 +2,7 @@ import {BookCheck,Headset,Star,StarOff} from 'lucide-react'
 import KanbanBoard from '../components/KanbanBoard.jsx'
 import AddJobModal from '../components/AddJobModal.jsx'
 import {useState,useEffect} from 'react'
+import { Link } from "react-router-dom"
 
 function Statcard({Icon,value,label,bgColor,iconColor,bColor,iconBg}){
     return(
@@ -74,7 +75,14 @@ export default function Dashboard(){
                     <h1 className="text-3xl font-bold">Welcome {name}!</h1>
                     <span className="text-lg font-medium text-[#494456]">Here's what's happening with your job search.</span>
                 </div>
-                <img src="/profile.png" alt="profile placeholder."  className="size-18"/>
+                <Link to="/dashboard/profile">
+                    <div
+                        className=" w-18 h-18 rounded-full bg-[#4A00C9] text-white flex items-center justify-center text-4xl font-bold shadow-lg cursor-pointer hover:scale-115 transition-transform "
+                        title="Go to Profile"
+                    >
+                        {name?.[0]?.toUpperCase() || "U"}
+                    </div>
+                </Link>
             </header>
 
             <div className='grid grid-cols-4 gap-4'>
