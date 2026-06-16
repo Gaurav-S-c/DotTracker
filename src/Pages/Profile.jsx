@@ -30,7 +30,7 @@ export default function Profile(){
                     const interviews=data.filter(j=>j.status==='interview').length
                     const offers=data.filter(j=>j.status==='offers').length
                     const rate=total>0 ? Math.round((interviews/total)*100):0
-                    setStates({total,interviews,offers,rate})
+                    setStats({total,interviews,offers,rate})
                 }
             }catch(err){
                 console.error('Failed to fetch stats:',err)
@@ -44,7 +44,7 @@ export default function Profile(){
         setSavingName(true)
         try{    
             const token =localStorage.getItem('token')
-            const respone=await fetch('http://localhost:3000/api/auth/update-name',{
+            const response=await fetch('http://localhost:3000/api/auth/update-name',{
                 method:'PATCH',
                 headers:{
                     'content-type':'application/json',
@@ -59,6 +59,7 @@ export default function Profile(){
                 localStorage.setItem('user',JSON.stringify(user))
                 setEditingName(false)
             }
+
 
         }catch(err){
             console.error('Failed to update Name:',err)
@@ -118,7 +119,7 @@ export default function Profile(){
                             {editingName?(
                                 <input
                                     value={tempName}
-                                    onChange={e=>setTempName(e.target.Value)}
+                                    onChange={e=>setTempName(e.target.value)}
                                     onKeyDown={e=>e.key==='Enter' && handleSaveName()}
                                     autoFocus
                                     className='tracking-wide text-lg font-semibold rounded-2xl bg-white shadow-lg pl-2 py-1 w-full border border-[#c5a6fb] focus:outline-none focus:border-[#4A00C9]'

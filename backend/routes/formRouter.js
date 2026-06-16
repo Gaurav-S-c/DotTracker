@@ -9,7 +9,7 @@ formsRouter.use(protect)
 formsRouter.get('/',getForm)
 formsRouter.post('/',insertData)
 formsRouter.patch('/:id',updateForm)
-formsRouter.delete('/:id',deleteForm)
 formsRouter.delete('/delete-all',deleteAllForms)
+formsRouter.delete('/:id',deleteForm)
 
 export default formsRouter

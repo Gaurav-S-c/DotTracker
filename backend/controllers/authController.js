@@ -1,7 +1,7 @@
 import supabase from '../src/supabase-client.js'
 
 export const signUpNewUser=async(req,res)=>{
-    const {email,password,name}=req.body;
+    const {email,password,name}=req.body
 
     if(!email || !password){
         return res.status(400).json({error:'Email and password are required'});
@@ -31,7 +31,7 @@ export const signUpNewUser=async(req,res)=>{
 }
 
 export const signInUser=async(req,res)=>{
-    const {email,password}=req.body;
+    const {email,password}=req.body
 
     if(!email || !password){
         return res.status(400).json({error:"Email and Password are Required"});
@@ -72,7 +72,7 @@ export const logout=async(req,res)=>{
 }
 
 export const forgotPassword=async(req,res)=>{
-    const {email} =req.body;
+    const {email} =req.body
     if(!email) return res.status(400).json({error:"Email is required"})
 
     try{
@@ -87,7 +87,7 @@ export const forgotPassword=async(req,res)=>{
 }
 
 export const updateName=async(req,res)=>{
-    const {name}=req.body;
+    const {name}=req.body
     if(!name)return res.status(400).json({error:"Name is required"})
 
     try{
@@ -95,24 +95,32 @@ export const updateName=async(req,res)=>{
             req.user.id,
             {user_metadata:{name}}
         )
-        if(error)return res.status(400).json({error:error.message}),
-        res.json({message:'Name updated'})
+        if(error){
+            return res.status(400).json({error:error.message})
+        }
+        return res.status(200).json({
+            message: "Name updated"
+        })
     }catch(err){
         res.status(500).json({error:err.message})
     }
 }
 
 export const changePassword = async(req,res)=>{
-    const{password}=req.body;
+    const{password}=req.body
     if(!password)return res.status(400).json({error:"Password is required"})
 
     try{
         const {error}=await supabase.auth.admin.updateUserById(
-            req,user,id,
+            req.user.id,
             {password}
         )
-        if(error)return res.status(400).json({error:error.message}),
-        res.json({message:'Password Changes'})
+        if(error){
+            return res.status(400).json({error:error.message})
+        }        
+        return res.status(200).json({
+            message: "Password changed successfully"
+        })
     }catch(err){
         res.status(500).json({error:err.message})
     }

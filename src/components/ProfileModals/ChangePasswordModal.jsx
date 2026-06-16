@@ -9,7 +9,7 @@ export default function ChangePasswordModal({onClose}){
 
     async function handleSubmit(){
         setError('')
-        if(form.password.length()<6)return setError('Password must be at least 6 characters')
+        if(form.password.length<6)return setError('Password must be at least 6 characters')
         if(form.password !== form.confirm) return setError('Passwords do not match')
         setLoading(true)
 
@@ -18,7 +18,7 @@ export default function ChangePasswordModal({onClose}){
             const response =await fetch('http://localhost:3000/api/auth/change-password',{
                 method:'PATCH',
                 headers:{
-                    'Content-Types':"application/json",
+                    'Content-Type':"application/json",
                     'Authorization':`Bearer ${token}`
                 },
                 body:JSON.stringify({password:form.password})
