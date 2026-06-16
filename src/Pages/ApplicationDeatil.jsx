@@ -337,7 +337,7 @@ export default function ApplicationDetail(){
 
                     <div className="bg-gray-50 rounded-xl p-3">
                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                        Job Description URL
+                        Job Description
                         </p>
                         {editing ? (
                         <input
@@ -345,7 +345,7 @@ export default function ApplicationDetail(){
                             name="JD_URL"
                             value={form.JD_URL}
                             onChange={handleChange}
-                            placeholder="https://..."
+                            placeholder="https://... or Text format"
                             className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9]"
                         />
                         ) : (

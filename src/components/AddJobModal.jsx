@@ -218,7 +218,7 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
 
                         <div>
                             <label className="font-medium text-sm">
-                                Job Description URL
+                                Job Description
                             </label>
 
                             <input
@@ -226,7 +226,7 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                                 name="JD_URL"
                                 value={formData.JD_URL}
                                 onChange={handleChange}
-                                placeholder="https://linkedin.com/jobs/..."
+                                placeholder="https://link... or Text Format"
                                 className="w-full mt-2 border rounded-xl px-3 py-2 bg-violet-50"
                             />
                         </div>
