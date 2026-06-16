@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import { User,Pencil,Star,Headset,Settings,Trash2,TrendingUp,Send,ChevronRight,UserRoundMinus,FileX,Lock,ListMinus,Check,X } from 'lucide-react'
+import { User,Pencil,Star,Headset,Settings,Trash2,TrendingUp,Send,ChevronRight,UserRoundMinus,FileX,Lock,ListMinus,Check,X,RotateCw } from 'lucide-react'
 
 import ChangePasswordModal from '../components/ProfileModals/ChangePasswordModal'
 import DeleteAccModal from '../components/ProfileModals/DeleteAccModal'
@@ -16,6 +16,34 @@ export default function Profile(){
     const [showChangePassword, setShowChangePassword]= useState(false)
     const [showDeleteApps, setShowDeleteApps]= useState(false)
     const [showDeleteAccount, setShowDeleteAccount]= useState(false)
+
+    const [location,setLocation]=useState(localStorage.getItem('country') || 'Detecting...')
+
+    async function getLocation(){
+        try{
+            const position=await new Promise((resolve,reject)=>{
+                navigator.geolocation.getCurrentPosition(resolve,reject)
+            })
+            const {latitude,longitude}=position.coords
+            const response = await fetch(
+                `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+            )
+            const data=await response.json()
+            const country=data.countryName || "Unkown"
+            setLocation(country)
+            localStorage.setItem('country',country)
+
+        }catch (err){
+        console.error(err)
+        setLocation('Location unavailable')
+        }
+    }
+
+    useEffect(() => {
+        if (!localStorage.getItem('country')) {
+            getLocation()
+        }
+    }, [])
 
     useEffect(()=>{
         async function fetchStats(){
@@ -137,8 +165,20 @@ export default function Profile(){
                             </p>
                         </div>
                         <div>
-                            <p className='tracking-wide text-sm font-semibold text-[#494456] mb-2 pl-2'>LOCATION</p>
-                            <p className='tracking-wide text-xl font-semibold rounded-2xl text-[#4b4852] bg-white shadow-lg pl-2 py-1'>India</p>
+                            <div className='flex items-center justify-between mb-2 px-2'>
+                                <p className='tracking-wide text-sm font-semibold text-[#494456]'>LOCATION</p>
+                                <button
+                                    onClick={() => {
+                                        localStorage.removeItem('country')
+                                        getLocation()
+                                    }}
+                                    
+                                    className='cursor-pointer '
+                                >
+                                    <RotateCw size={18} className='hover:size-5'/>
+                                </button>
+                            </div>
+                            <p className='tracking-wide text-xl font-semibold rounded-2xl text-[#4b4852] bg-white shadow-lg pl-2 py-1'>{location}</p>
                         </div>
                     </div>
                 </div>
