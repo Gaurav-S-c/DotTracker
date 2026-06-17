@@ -1,6 +1,7 @@
 import {Link , useNavigate} from "react-router-dom"
 import { useState } from 'react'
 import {Goal,Mail,ArrowLeft } from "lucide-react"
+import { motion } from "framer-motion"
 
 export default function ForgotPassword(){
     const [error,setError]=useState('')
@@ -58,7 +59,7 @@ export default function ForgotPassword(){
         <Link
           to="/login"
           className="flex items-center justify-center gap-2 mt-6 text-[#4A00C9] font-medium hover:underline underline-offset-4"
-        >
+          >
           <ArrowLeft size={18}/> Back to Sign In
         </Link>
       </div>
@@ -66,6 +67,11 @@ export default function ForgotPassword(){
     )
 
     return(
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
         <main className="relative min-h-screen flex items-center justify-center">
             <img src="/forgotpassword-bg.png" alt="sign-in background image" className="object-cover h-screen w-full absolute inset-0" />
             <div className="relative z-10 bg-white w-full max-w-md rounded-3xl shadow-2xl p-8">
@@ -101,5 +107,6 @@ export default function ForgotPassword(){
                 </form>
             </div>
         </main>
+        </motion.div>
     )
 }

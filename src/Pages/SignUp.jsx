@@ -1,6 +1,7 @@
 import {Link,useNavigate} from "react-router-dom"
 import { useState } from "react"
 import {Goal,Mail,Lock,Eye,User,EyeOff } from "lucide-react"
+import { motion } from "framer-motion"
 
 export default function SignUp(){
     const [error,setError]=useState('')
@@ -49,6 +50,11 @@ export default function SignUp(){
     }
 
     return(
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
         <main className="relative min-h-screen flex items-center justify-center">
             <img src="/signup-bg.png" alt="sign-in background image" className="object-cover h-screen w-full absolute inset-0" />
             <div className="relative z-10 bg-white w-full max-w-md rounded-3xl shadow-2xl p-8">
@@ -97,5 +103,6 @@ export default function SignUp(){
                 </form>
             </div>
         </main>
+        </motion.div>
     )
 }

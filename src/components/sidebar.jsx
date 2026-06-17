@@ -1,5 +1,5 @@
 import { NavLink,Link,useNavigate } from 'react-router-dom'
-import {Goal,House,Boxes,FileUser,LogOut} from 'lucide-react'
+import {Goal,House,Boxes,FileUser,LogOut,Wand2} from 'lucide-react'
 
 export default function Sidebar() {
   const navigate=useNavigate()
@@ -48,6 +48,12 @@ export default function Sidebar() {
             <FileUser className='size-5 stroke-[#FFAB03]'/>
           </div>
           Profile
+        </NavLink>
+        <NavLink to="/dashboard/resume-tailor" className='flex items-center gap-3 pb-5 font-medium hover:text-[#65c1ff]'>
+          <div className='p-1 rounded-sm bg-[#e7f5fe]'>
+            <Wand2 className='size-5 stroke-[#65c1ff]'/>
+          </div>
+          Resume Tailor
         </NavLink>
       </nav>
       <button onClick={handleLogout} className="flex items-center gap-3 font-semibold cursor-pointer w-35 mt-auto border-3 border-red-600 rounded-xl px-3 py-2 bg-red-600 text-white hover:bg-red-700 hover:border-red-700 hover:bg-transition-colors">

@@ -1,6 +1,7 @@
 import { useState,useEffect } from "react"
 import { useParams,useNavigate,useSearchParams } from "react-router-dom"
-import { ArrowLeft,Pencil,Trash2,TriangleAlert,Check,X } from "lucide-react"
+import { ArrowLeft,Pencil,Trash2,TriangleAlert,Check,X,Wand2 } from "lucide-react"
+import { motion } from "framer-motion"
 
 const STATUS_STYLES={
     wishlist:'border border-[#75A0AD] bg-[#C0E4FC]',
@@ -221,6 +222,11 @@ export default function ApplicationDetail(){
     if (!job)    return <p className="text-center mt-8 text-gray-400">Application not found.</p>
 
     return(
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.25 }}
+        >
         <div className="max-w-5xl">
             <div className="mb-3">
                 <h1 className="text-3xl font-bold text-[#171A1D] mb-3">Application Details.</h1>
@@ -232,7 +238,7 @@ export default function ApplicationDetail(){
                     <span>Back to applications.</span>
                 </button>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 ml-40 max-h-[84vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 ml-40 max-h-[95vh] mb-5 ">
                 {error && (
                     <p className="text-red-500 text-sm bg-red-100 px-4 py-2 rounded-xl mb-3">
                         {error}
@@ -464,39 +470,50 @@ export default function ApplicationDetail(){
                         </p>
                     )}
                 </div>
+                <div className="flex justify-between items-center">
+                    <div className="flex justify-center">
+                        <button
+                        onClick={()=>{navigate('/dashboard/resume-tailor')}}
+                        className="flex items-center gap-2 px-8 py-3 rounded-full bg-[#4A00C9] text-white font-semibold text-md cursor-pointer transition-opacity shadow-lg hover:scale-110 "
+                        >
+                        <Wand2 size={18}/>
+                            Tailor My Resume
+                        </button>
+                    </div>
+                    {editing ? (
+                        <div className="flex justify-end gap-3">
+                            <button
+                            onClick={handleCancel}
+                            className="flex items-center gap-2 px-5 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 cursor-pointer"
+                            >
+                            <X size={14}/> Cancel
+                            </button>
+                            <button
+                            onClick={handleSave}
+                            disabled={saving}
+                            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#4A00C9] text-white text-sm font-medium hover:opacity-90 disabled:opacity-60 cursor-pointer"
+                            >
+                            <Check size={14}/> {saving ? 'Saving...' : 'Save Changes'}
+                            </button>
+                        </div>
+                        ) : (
+                        <div className="flex justify-end gap-3">
+                            <button
+                            onClick={() => setEditing(true)}
+                            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#4A00C9] text-white text-sm font-medium hover:opacity-90 cursor-pointer"
+                            >
+                            <Pencil size={14}/> Edit
+                            </button>
+                            <button
+                            onClick={() => setShowConfirm(true)}
+                            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 cursor-pointer"
+                            >
+                            <Trash2 size={14}/> Delete
+                            </button>
+                        </div>
+                        )}
+                </div>
 
-                {editing ? (
-                    <div className="flex justify-end gap-3">
-                        <button
-                        onClick={handleCancel}
-                        className="flex items-center gap-2 px-5 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 cursor-pointer"
-                        >
-                        <X size={14}/> Cancel
-                        </button>
-                        <button
-                        onClick={handleSave}
-                        disabled={saving}
-                        className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#4A00C9] text-white text-sm font-medium hover:opacity-90 disabled:opacity-60 cursor-pointer"
-                        >
-                        <Check size={14}/> {saving ? 'Saving...' : 'Save Changes'}
-                        </button>
-                    </div>
-                    ) : (
-                    <div className="flex justify-end gap-3">
-                        <button
-                        onClick={() => setEditing(true)}
-                        className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#4A00C9] text-white text-sm font-medium hover:opacity-90 cursor-pointer"
-                        >
-                        <Pencil size={14}/> Edit
-                        </button>
-                        <button
-                        onClick={() => setShowConfirm(true)}
-                        className="flex items-center gap-2 px-5 py-2 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 cursor-pointer"
-                        >
-                        <Trash2 size={14}/> Delete
-                        </button>
-                    </div>
-                    )}
             </div>
             {showConfirm && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
@@ -529,5 +546,6 @@ export default function ApplicationDetail(){
                 </div>
             )}
         </div>
+        </motion.div>
     )
 }

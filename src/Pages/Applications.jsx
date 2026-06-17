@@ -2,6 +2,7 @@ import ApplicationHeader from "../components/Applications/ApplicationHeader"
 import ApplicationTable from "../components/Applications/ApplicationTable"
 import AddJobModal from "../components/AddJobModal"
 import {useState,useEffect} from 'react'
+import { motion } from "framer-motion"
 
 const ROWS_PER_PAGE=7
 
@@ -62,6 +63,11 @@ export default function Applications(){
     )
 
     return(
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.25 }}
+        >
         <div>
             <ApplicationHeader
                 search={search}
@@ -88,5 +94,6 @@ export default function Applications(){
                 onJobAdded={handleJobAdded}
             />
         </div>
+        </motion.div>
     )
 }

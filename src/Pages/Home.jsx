@@ -1,6 +1,7 @@
 import { Sparkles,SquareKanban,ClipboardList, FileSearch ,FileText,Goal,LogOut} from "lucide-react"
 import {Link,useNavigate} from "react-router-dom"
 import { useState } from "react"
+import { motion } from "framer-motion"
 
 export default function Home(){
 const navigate=useNavigate()
@@ -14,7 +15,11 @@ const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'))
     }
     
     return(
-        <>
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.25 }}
+        >
             <header className="flex justify-between px-8 items-center h-13 bg-[#fcf5ff] border-b border-[#f9e9fe] fixed top-0 left-0 w-full z-50">
                 <div className="flex items-center gap-2">
                     <Goal className='size-10 stroke-[#6a2fea]'/>
@@ -114,6 +119,8 @@ const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'))
                     <p className="text-[#494456] font-medium">@2026 DotTracker All rights reserved</p>
                 </div>
             </footer>
-        </>
+        </motion.div
+        
+        >
     )
 }

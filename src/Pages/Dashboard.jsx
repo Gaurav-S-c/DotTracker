@@ -3,6 +3,7 @@ import KanbanBoard from '../components/KanbanBoard.jsx'
 import AddJobModal from '../components/AddJobModal.jsx'
 import {useState,useEffect} from 'react'
 import { Link } from "react-router-dom"
+import { motion } from 'framer-motion'
 
 function Statcard({Icon,value,label,bgColor,iconColor,bColor,iconBg}){
     return(
@@ -69,7 +70,11 @@ export default function Dashboard(){
 ]
 
     return(
-        <>
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.25 }}
+        >
             <header className="flex justify-between mb-8">
                 <div>
                     <h1 className="text-3xl font-bold">Welcome {name}!</h1>
@@ -96,6 +101,6 @@ export default function Dashboard(){
             <main className='mt-8'>
                 <KanbanBoard onCountsChange={setCounts}/>
             </main>
-        </>
+        </motion.div>
     )
 }

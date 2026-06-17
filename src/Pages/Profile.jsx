@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react'
 import { User,Pencil,Star,Headset,Settings,Trash2,TrendingUp,Send,ChevronRight,UserRoundMinus,FileX,Lock,ListMinus,Check,X,RotateCw } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 import ChangePasswordModal from '../components/ProfileModals/ChangePasswordModal'
 import DeleteAccModal from '../components/ProfileModals/DeleteAccModal'
@@ -97,6 +98,11 @@ export default function Profile(){
     }
 
     return(
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.25 }}
+        >
         <div>
             <div className='mb-5'>
                 <div className='flex items-center'>
@@ -194,16 +200,16 @@ export default function Profile(){
                     </div>
                 ))}
             </div>
-            <div className='rounded-2xl border border-gray-100 shadow-lg bg-[#F7F3FD] h-55 p-4'>
+            <div className='rounded-2xl border border-gray-100 shadow-lg bg-[#F7F3FD] h-60 p-4 mb-6'>
                 <div className='flex gap-3 items-center'>
                     <div className=' p-2 rounded-xl bg-white'>
                         <Settings size={20} className='stroke-[#4A00C9]'/>
                     </div>
                     <h2 className='text-xl font-medium'>Account Settings</h2>
                 </div>
-                <hr className='mt-2 mb-2 border-gray-300'/>
+                <hr className='mt-3 mb-3 border-gray-300'/>
 
-                <div className='flex items-center justify-between bg-white rounded-2xl p-2 hover:bg-green-100 mb-2 cursor-pointer shadow-lg'
+                <div className='flex items-center justify-between bg-white rounded-2xl p-2 hover:bg-green-100 mb-3 cursor-pointer shadow-lg'
                     onClick={()=>setShowChangePassword(true)}
                 >
                     <div className='flex gap-3 items-center'>
@@ -212,7 +218,7 @@ export default function Profile(){
                     </div>
                     <ChevronRight/>
                 </div>
-                <div className='flex items-center justify-between  bg-white rounded-2xl p-2 hover:bg-red-100 mb-2 cursor-pointer shadow-lg'
+                <div className='flex items-center justify-between  bg-white rounded-2xl p-2 hover:bg-red-100 mb-3 cursor-pointer shadow-lg'
                     onClick={()=>setShowDeleteApps(true)}
                 >
                     <div className='flex gap-3 items-center'>
@@ -245,5 +251,6 @@ export default function Profile(){
                 <DeleteAccModal onClose={() => setShowDeleteAccount(false)} />
             )}
         </div>
+        </motion.div>
     )
 }
