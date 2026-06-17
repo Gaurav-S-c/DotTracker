@@ -57,11 +57,11 @@ export default function ApplicationDetail(){
         job_type:'',
         status:'',
         Applied_date:'',
-        JD_URL:'',
+        jd_text:'',
         Notes:'',
         work_mode:'',
         job_location:'',
-        resume_url:'',
+        resume_path:'',
     })
 
     useEffect(()=>{
@@ -82,9 +82,9 @@ export default function ApplicationDetail(){
                             job_type:found.job_type || '',
                             status:found.status || '',
                             Applied_date:found.Applied_date || '',
-                            JD_URL:found.JD_URL || '',
+                            jd_text:found.jd_text || '',
                             Notes:found.Notes || '',
-                            resume_url:found.resume_url || '',
+                            resume_path:found.resume_path || '',
                             work_mode:found.work_mode || '',
                             job_location:found.job_location || '',
                         })
@@ -101,6 +101,61 @@ export default function ApplicationDetail(){
 
     const handleChange=(e)=>
         setForm({...form,[e.target.name]:e.target.value})
+
+    const [uploadingResume, setUploadingResume] = useState(false)
+    const [resumeUrl, setResumeUrl]= useState(null)
+    const [loadingResume, setLoadingResume]= useState(false)
+    
+    async function handleResumeUpload(e){
+        const file =e.target.files[0]
+        if(!file) return 
+        setUploadingResume(true)
+
+        try{
+            const token =localStorage.getItem('token')
+            const pdfForm=new FormData()
+            pdfForm.append('resume',file)
+
+            const response =await fetch('http://localhost:3000/api/resume/upload',{
+                method:'POST',
+                headers:{'Authorization':`Bearer ${token}`},
+                body:pdfForm
+            })
+
+            const data = await response.json()
+            if(response.ok){
+                setForm(prev => ({...prev,resume_path:data.resume_path}))
+            }else{
+                setError(data.error || 'Failed to upload resume')
+            }
+        }
+        catch(err){
+            setError('Resume upload failed.')
+        }
+        finally{
+            setUploadingResume(false)
+        }
+    }
+
+    async function fetchResumeUrl() {
+        if (!job.resume_path) return
+        setLoadingResume(true)
+        try {
+            const token    = localStorage.getItem('token')
+            const response = await fetch(
+            `http://localhost:3000/api/resume/signed-url?path=${job.resume_path}`,
+            { headers: { 'Authorization': `Bearer ${token}` } }
+            )
+            const data = await response.json()
+            if (response.ok) {
+            window.open(data.url, '_blank')  // open directly
+            }
+        } catch (err) {
+            console.error('Failed to get resume URL:', err)
+        } finally {
+            setLoadingResume(false)
+        }
+    }
     
     async function handleSave(){
         setSaving(true)
@@ -136,9 +191,9 @@ export default function ApplicationDetail(){
             job_type:job.job_type || '',
             status:job.status || '',
             Applied_date:job.Applied_date || '',
-            JD_URL:job.JD_URL || '',
+            jd_text:job.jd_text || '',
             Notes:job.Notes || '',
-            resume_url:job.resume_url || '',
+            resume_path:job.resume_path || '',
             work_mode:job.work_mode || '',
             job_location:job.job_location || '',
         })
@@ -246,7 +301,7 @@ export default function ApplicationDetail(){
                 <hr className="border-gray-300 mb-4"/>
 
                 <div className="grid md:grid-cols-2 gap-4 mb-5">
-                    <div className="bg-gray-50 rounded-xl p-3">
+                    <div className="bg-gray-50 rounded-xl p-3 shadow-sm">
                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
                             Date Applied
                         </p>
@@ -268,7 +323,7 @@ export default function ApplicationDetail(){
                         </p>
                         )}
                     </div>
-                    <div className="bg-gray-50 rounded-xl p-3">
+                    <div className="bg-gray-50 rounded-xl p-3 shadow-sm">
                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
                         Job Type
                         </p>
@@ -293,7 +348,7 @@ export default function ApplicationDetail(){
                         )}
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-3">
+                    <div className="bg-gray-50 rounded-xl p-3 shadow-sm">
                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
                             Job Location
                         </p>
@@ -312,7 +367,7 @@ export default function ApplicationDetail(){
                         )}
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-3">
+                    <div className="bg-gray-50 rounded-xl p-3 shadow-sm">
                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
                             Work Mode
                         </p>
@@ -335,65 +390,62 @@ export default function ApplicationDetail(){
                         )}
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-3">
+                    <div className="bg-gray-50 rounded-xl p-3 shadow-sm">
                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                        Job Description
+                            Resume
                         </p>
                         {editing ? (
-                        <input
-                            type="url"
-                            name="JD_URL"
-                            value={form.JD_URL}
-                            onChange={handleChange}
-                            placeholder="https://... or Text format"
-                            className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9]"
-                        />
+                            <div>
+                            <input
+                                type="file"
+                                accept=".pdf"
+                                onChange={handleResumeUpload}
+                                className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm cursor-pointer bg-white"
+                            />
+                            {uploadingResume && (
+                                <p className="text-xs text-purple-500 mt-1">Uploading resume...</p>
+                            )}
+                            {form.resume_path && (
+                                <p className="text-xs text-green-500 mt-1">Resume uploaded</p>
+                            )}
+                            </div>
                         ) : (
-                        job.JD_URL ? (
-                            <a
-                                href={job.JD_URL}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-[#4A00C9] hover:underline text-sm"
-                            >
-                            View Job Description ↗
-                            </a>
-                        ) : (
-                            <p className="text-gray-700 font-medium">—</p>
-                        )
-                        )}
-                    </div>
-
-                    <div className="bg-gray-50 rounded-xl p-3">
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                        Resume URL
-                        </p>
-                        {editing ? (
-                        <input
-                            type="url"
-                            name="Resume_URL"
-                            value={form.Resume_url}
-                            onChange={handleChange}
-                            placeholder="https://..."
-                            className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9]"
-                        />
-                        ) : (
-                        job.JD_URL ? (
-                            <a
-                                href={job.resume_url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-[#4A00C9] hover:underline text-sm"
-                            >
-                            View Resume Description ↗
-                            </a>
-                        ) : (
-                            <p className="text-gray-700 font-medium">—</p>
-                        )
+                            job.resume_path ? (
+                                <button
+                                onClick={fetchResumeUrl}
+                                disabled={loadingResume}
+                                className="text-[#4A00C9] hover:underline text-sm cursor-pointer disabled:opacity-60"
+                                >
+                                {loadingResume ? 'Opening...' : 'View Resume ↗'}
+                                </button>
+                                ): (
+                                <p className="text-gray-700 font-medium">—</p>
+                            )
                         )}
                     </div>
                 </div>
-                <div className="bg-gray-50 rounded-xl p-4 mb-6">
+
+                <div className="bg-gray-50 rounded-xl p-3 col-span-2 mb-5 shadow-sm">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                        Job Description
+                    </p>
+                    {editing ? (
+                        <textarea
+                        name="jd_text"            
+                        value={form.jd_text}       
+                        onChange={handleChange}
+                        rows={4}
+                        placeholder="Paste the job description here..."
+                        className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9] resize-none bg-white"
+                        />
+                    ) : (
+                        <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">
+                        {job.jd_text || 'No job description added yet'}       
+                        </p>
+                    )}
+                </div>
+    
+                <div className="bg-gray-50 rounded-xl p-4 mb-6 shadow-sm">
                     <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
                         Notes
                     </p>
@@ -402,7 +454,7 @@ export default function ApplicationDetail(){
                         name="Notes"
                         value={form.Notes}
                         onChange={handleChange}
-                        rows={4}
+                        rows={2}
                         placeholder="Add your notes here..."
                         className="w-full border border-[#c5a6fb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4A00C9] resize-none bg-white"
                         />

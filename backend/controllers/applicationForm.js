@@ -18,7 +18,7 @@ export async function getForm(req,res){
 }
 
 export async function insertData(req,res){
-    const {company,role,job_type,status,Applied_date,JD_URL,Notes,job_location,work_mode,resume_url}=req.body
+    const {company,role,job_type,status,Applied_date,jd_text,Notes,job_location,work_mode,resume_path}=req.body
     try{
          if (!req.user) {
        return res.status(401).json({ error: "Unauthorized" });
@@ -27,7 +27,7 @@ export async function insertData(req,res){
         const {data,error}=await supabase
             .from('application_form')
             .insert([{
-                company,role,job_type,status,Applied_date,JD_URL,Notes,job_location,work_mode,resume_url,user_id: req.user.id
+                company,role,job_type,status,Applied_date,jd_text,Notes,job_location,work_mode,resume_path,user_id: req.user.id
             }])
             .select()
 

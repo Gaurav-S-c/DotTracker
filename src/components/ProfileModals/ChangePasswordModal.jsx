@@ -18,7 +18,7 @@ export default function ChangePasswordModal({onClose}){
             const response =await fetch('http://localhost:3000/api/auth/change-password',{
                 method:'PATCH',
                 headers:{
-                    'Content-Type':"application/json",
+                    'Content-type':"application/json",
                     'Authorization':`Bearer ${token}`
                 },
                 body:JSON.stringify({password:form.password})
@@ -29,7 +29,7 @@ export default function ChangePasswordModal({onClose}){
                 setError(data.error || 'Failed to change password')
             }
         }catch(err){
-            console.error('Something went wrong.')
+            setError('Something went wrong.Check your connection')
         }finally{
             setLoading(false)
         }

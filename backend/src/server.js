@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import authRouter from "../routes/authRoutes.js"
 import formsRouter from "../routes/formRouter.js"
+import resumeRouter from "../routes/resumeRouter.js"
 
 const app=express()
 const PORT=3000
@@ -12,6 +13,7 @@ app.use(express.json())
 
 app.use('/api/auth',authRouter)
 app.use('/api/dashboard', formsRouter)
+app.use('/api/resume',resumeRouter)
  
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`)

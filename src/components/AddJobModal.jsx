@@ -8,15 +8,19 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
         job_type:"",
         status:"",
         Applied_date:"",
-        JD_URL:"",
+        jd_text:"",
         Notes:"",
         job_location:"",
         work_mode:"",
-        resume_url:"",
+        resume_path:"",
     })
 
     const [loading,setLoading]=useState(false)
     const [error,setError]=useState("")
+
+    const [resumeFile, setResumeFile]   = useState(null)
+    const [uploadingPdf, setUploadingPdf] = useState(false)
+    const [resumeUploaded, setResumeUploaded] = useState(false)
 
     if(!showModal)return null
 
@@ -35,6 +39,34 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
 
         try{
             const token =localStorage.getItem('token')
+            let resume_path=''
+
+            if(resumeFile){
+                setUploadingPdf(true)
+                const pdfForm=new FormData()
+                pdfForm.append('resume',resumeFile)
+
+                const pdfResponse=await fetch('http://localhost:3000/api/resume/upload',{
+                    method:'POST',
+                    headers:{'Authorization':`Bearer ${token}`},
+                    body:pdfForm
+                })
+
+                console.log('PDF parsed successfully')
+
+                const pdfData=await pdfResponse.json()
+
+                console.log('PDF Response:', pdfData)
+
+                if(!pdfResponse.ok){
+                    setError(pdfData.error || 'Failed to upload resume')
+                    return
+                }
+                resume_path = pdfData.resume_path
+                setUploadingPdf(false)
+                setResumeUploaded(true)
+            }
+
             const response=await fetch('http://localhost:3000/api/dashboard',{
                 method:'POST',
                 headers:{
@@ -47,9 +79,9 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                     job_type:formData.job_type,
                     status:formData.status || selectedColumn,
                     Applied_date:formData.Applied_date,
-                    JD_URL:formData.JD_URL,
+                    jd_text:formData.jd_text,
                     Notes:formData.Notes,
-                    resume_url:formData.resume_url,
+                    resume_path:resume_path,
                     work_mode:formData.work_mode,
                     job_location:formData.job_location,
                 })
@@ -63,26 +95,29 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
             }
 
             onJobAdded(data[0])
-           
-           setShowModal(false)
+            setShowModal(false)
+            setResumeFile(null)
+            setResumeUploaded(false)
     
-           setFormData({
+            setFormData({
                company:"",
                role:"",
                job_type:"",
                status:"",
                Applied_date:"",
-               JD_URL:"",
+               jd_text:"",
                Notes:"",
                job_location:"",
                work_mode:"",
-               resume_url:""
+               resume_path:""
            })
         }
         catch(err){
-            setError('Something went wrong. Check your connection.')
+            console.error(err)
+            setError(err.message)
         }finally{
             setLoading(false)
+            setUploadingPdf(false)
         }
         
     }
@@ -90,13 +125,13 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
 
     return (
         <div className="fixed inset-0 bg-black/40 flex backdrop-blur-sm items-center justify-center z-50 ">
-            <div className="w-full max-w-180 bg-[#FCFCFC] rounded-2xl shadow-xl overflow-hidden">
+            <div className="w-full max-w-5xl bg-[#FCFCFC] rounded-2xl shadow-xl overflow-hidden max-h-[90vh] flex flex-col">
                 <div className="flex items-center justify-between px-4 pt-4 pb-2 border-b">
                     <h2 className="text-3xl font-bold text-[#4A00C9]">New Application</h2>
                     <button onClick={()=>setShowModal(false)}><X/></button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-4 space-y-4">
+                <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto">
                     <div className="grid grid-cols-3 gap-4">
                         <div>
                             <label className="font-medium text-sm">
@@ -200,7 +235,7 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="font-medium text-sm">
                                 Date Applied
@@ -217,31 +252,43 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                         </div>
 
                         <div>
+                            <label className="font-medium text-sm">Resume (PDF)</label>
+                            <div className="mt-2">
+                                <input
+                                type="file"
+                                accept=".pdf"
+                                onChange={e => setResumeFile(e.target.files[0])}
+                                className="w-full border rounded-xl px-3 py-2.5 bg-violet-50 text-sm cursor-pointer"
+                                />
+                                {resumeFile && (
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Selected: {resumeFile.name}
+                                </p>
+                                )}
+                                {resumeUploaded && (
+                                <p className="text-xs text-green-500 mt-1">✓ Resume uploaded</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-span-3">
                             <label className="font-medium text-sm">
                                 Job Description
                             </label>
 
-                            <input
-                                type="url"
-                                name="JD_URL"
-                                value={formData.JD_URL}
-                                onChange={handleChange}
-                                placeholder="https://link... or Text Format"
-                                className="w-full mt-2 border rounded-xl px-3 py-2 bg-violet-50"
-                            />
-                        </div>
+                            <p className="text-xs text-gray-500 mt-1">
+                                Used by AI Resume Tailor to generate suggestions.
+                            </p>
 
-                        <div>
-                            <label className="font-medium text-sm">Resume (PDF link)</label>
-                            <input
-                                type="url"
-                                name="resume_url"
-                                value={formData.resume_url}
+                            <textarea
+                                name="jd_text"
+                                value={formData.jd_text}
                                 onChange={handleChange}
-                                placeholder="https://drive.google.com/your-resume.pdf"
-                                className="w-full mt-2 border rounded-xl px-3 py-2 bg-violet-50"
+                                rows={6}
+                                placeholder="Paste the full job description here..."
+                                className="w-full mt-2 border rounded-xl px-3 py-2 bg-violet-50 resize-none"
                             />
-                        </div>
                     </div>
 
                     <div>
@@ -249,7 +296,7 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                             Notes
                         </label>
                         <textarea
-                            rows="3"
+                            rows="2"
                             name="Notes"
                             value={formData.Notes}
                             onChange={handleChange}
@@ -271,10 +318,10 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
 
                         <button
                         type="submit"
-                        disabled={loading}
-                        className="px-5 py-2 rounded-xl bg-violet-500 text-white cursor-pointer"
+                        disabled={loading || uploadingPdf}
+                        className="px-5 py-2 rounded-xl bg-violet-500 text-white cursor-pointer disabled:opacity-60"
                         >
-                        {loading ? 'Saving...' : 'Save Application'}
+                        {uploadingPdf ? 'Uploading PDF...' : loading ? 'Saving...' : 'Save Application'}
                         </button>
                     </div>
                 </form>
