@@ -94,7 +94,14 @@ export default function ForgotPassword(){
                         <label className="font-medium block pb-1">Email</label>
                         <div className="relative">
                             <Mail size={20} className="absolute stroke-[#6a2fea] left-3 top-1/2 -translate-y-1/2"/>
-                            <input type="email" placeholder="Enter your Email" className="w-full border-2 border-[#EEEEEE] focus:outline-none rounded-xl py-3 pl-10 pr-5 focus:ring-2 focus:ring-[#bdbdbd] " required/>
+                            <input 
+                                type="email" 
+                                value={email}
+                                onChange={(e)=>setEmail(e.target.value)}
+                                placeholder="Enter your Email" 
+                                className="w-full border-2 border-[#EEEEEE] focus:outline-none rounded-xl py-3 pl-10 pr-5 focus:ring-2 focus:ring-[#bdbdbd] " 
+                                required
+                            />
                         </div>
                     </div>
                     <button type="submit" className="py-2 border-2 border-[#ECECEC] font-semibold text-xl w-full rounded-2xl text-[#272727] cursor-pointer hover:text-[#E0BEF6] hover:bg-[#5919EA]">

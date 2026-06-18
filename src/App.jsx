@@ -14,6 +14,7 @@ import Applications from "./Pages/Applications"
 import ApplicationDetail from "./Pages/ApplicationDeatil"
 import Profile from "./Pages/Profile"
 import ResumeTailor from "./Pages/ResumeTailor"
+import ResetPassword from "./Pages/ResetPassword"
 
 import ProtectedRoute from "./components/ProtectedRoute"
 
@@ -60,6 +61,7 @@ export default function App(){
                 <Route path="/login" element={<SignIn/>}/>
                 <Route path="/register" element={<SignUp/>}/>
                 <Route path="/forgot-password" element={<ForgotPassword/>}/>
+                <Route path="/reset-password" element={<ResetPassword/>} />
 
                 <Route path="/dashboard" element={
                     <ProtectedRoute>
