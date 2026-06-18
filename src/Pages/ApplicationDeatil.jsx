@@ -218,7 +218,67 @@ export default function ApplicationDetail(){
         }
     }
 
-    if (loading) return <p className="text-center mt-8 text-gray-400">Loading...</p>
+    if (loading) {
+        return (
+            <div className="max-w-5xl animate-pulse">
+            <div className="mb-5">
+                <div className="h-10 w-72 bg-gray-200 rounded mb-3"></div>
+                <div className="h-4 w-32 bg-gray-200 rounded"></div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 ml-40">
+
+                <div className="flex gap-4 mb-6">
+                <div className="w-14 h-14 bg-gray-200 rounded-xl"></div>
+                <div className="flex-1">
+                    <div className="h-8 w-52 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-5 w-36 bg-gray-200 rounded"></div>
+                </div>
+                </div>
+
+                <div className="border-b mb-6"></div>
+                <div className="grid md:grid-cols-2 gap-4 mb-5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <div
+                    key={i}
+                    className="bg-gray-100 rounded-xl p-4 h-24"
+                    >
+                    <div className="h-3 w-24 bg-gray-200 rounded mb-3"></div>
+                    <div className="h-5 w-40 bg-gray-200 rounded"></div>
+                    </div>
+                ))}
+                </div>
+                <div className="bg-gray-100 rounded-xl p-4 mb-5">
+                <div className="h-3 w-32 bg-gray-200 rounded mb-4"></div>
+
+                <div className="space-y-3">
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 w-4/5 bg-gray-200 rounded"></div>
+                </div>
+                </div>
+
+                <div className="bg-gray-100 rounded-xl p-4 mb-5">
+                <div className="h-3 w-24 bg-gray-200 rounded mb-4"></div>
+
+                <div className="space-y-3">
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 w-2/3 bg-gray-200 rounded"></div>
+                </div>
+                </div>
+
+                <div className="flex justify-between">
+                <div className="h-12 w-52 bg-gray-200 rounded-full"></div>
+
+                <div className="flex gap-3">
+                    <div className="h-10 w-24 bg-gray-200 rounded-xl"></div>
+                    <div className="h-10 w-24 bg-gray-200 rounded-xl"></div>
+                </div>
+                </div>
+            </div>
+            </div>
+        )
+        }
     if (!job)    return <p className="text-center mt-8 text-gray-400">Application not found.</p>
 
     return(
@@ -473,7 +533,7 @@ export default function ApplicationDetail(){
                 <div className="flex justify-between items-center">
                     <div className="flex justify-center">
                         <button
-                        onClick={()=>{navigate('/dashboard/resume-tailor')}}
+                        onClick={()=>{navigate(`/dashboard/resume-tailor`)}}
                         className="flex items-center gap-2 px-8 py-3 rounded-full bg-[#4A00C9] text-white font-semibold text-md cursor-pointer transition-opacity shadow-lg hover:scale-110 "
                         >
                         <Wand2 size={18}/>

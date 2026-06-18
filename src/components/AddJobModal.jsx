@@ -51,13 +51,7 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                     headers:{'Authorization':`Bearer ${token}`},
                     body:pdfForm
                 })
-
-                console.log('PDF parsed successfully')
-
                 const pdfData=await pdfResponse.json()
-
-                console.log('PDF Response:', pdfData)
-
                 if(!pdfResponse.ok){
                     setError(pdfData.error || 'Failed to upload resume')
                     return

@@ -139,7 +139,7 @@ function JobCard({job,provided,col,onDelete}){
     )
 }
 
-export default function KanbanBoard({ onCountsChange }){
+export default function KanbanBoard({ onCountsChange ,setDashboardLoading }){
     
     const [jobs,setjobs]=useState([])
     const [showModal,setShowModal]=useState(false)
@@ -167,6 +167,9 @@ export default function KanbanBoard({ onCountsChange }){
                 console.error('Failed to fetch jobs:', err)
             }finally {
                 setLoading(false)
+                if(setDashboardLoading){
+                    setDashboardLoading(false)
+                }
             }
         }
         fetchJobs()
@@ -220,7 +223,18 @@ export default function KanbanBoard({ onCountsChange }){
         updateJobs(updatedJobs)  
     }
     
-    if (loading) return <p className="text-center mt-8 text-gray-400">Loading your applications...</p>
+    if (loading) return(
+        <section className="mt-8">
+            <div className="flex gap-4 min-w-max">
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <div
+                        key={i}
+                        className="w-56 h-96 rounded-2xl bg-gray-100 animate-pulse"
+                    />
+                ))}
+            </div>
+        </section>
+    )
 
     return (
         <DragDropContext onDragEnd={handleDragEnd}>

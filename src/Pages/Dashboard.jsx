@@ -19,9 +19,25 @@ function Statcard({Icon,value,label,bgColor,iconColor,bColor,iconBg}){
     )
 }
 
+function StatCardSkeleton(){
+    return(
+        <div className="animate-pulse border-2 border-gray-200 rounded-2xl p-3 h-19">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-gray-200"></div>
+                    <div className="w-28 h-5 bg-gray-200 rounded"></div>
+                </div>
+
+                <div className="w-10 h-8 bg-gray-200 rounded"></div>
+            </div>
+        </div>
+    )
+}
+
 export default function Dashboard(){
     const user=JSON.parse(localStorage.getItem('user'))
     const name=user?.user_metadata?.name || 'User'
+    const [loading,setLoading] = useState(true)
 
     const [counts,setCounts]=useState({
         total:0,
@@ -91,15 +107,24 @@ export default function Dashboard(){
             </header>
 
             <div className='grid grid-cols-4 gap-4'>
-                {stats.map((stat)=>{
-                    const Icon=stat.icon
-                    return(
-                        <Statcard key={stat.label}{...stat} Icon={Icon}/>
-                    )
-                })}
+                {loading ? (
+                    Array.from({ length: 4 }).map((_, i) => (
+                        <StatCardSkeleton key={i} />
+                    ))
+                ):(
+                    stats.map((stat)=>{
+                        const Icon=stat.icon
+                        return(
+                            <Statcard key={stat.label}{...stat} Icon={Icon}/>
+                        )
+                    })
+                )}
             </div>
             <main className='mt-8'>
-                <KanbanBoard onCountsChange={setCounts}/>
+                <KanbanBoard 
+                    onCountsChange={setCounts}
+                    setDashboardLoading={setLoading}
+                />
             </main>
         </motion.div>
     )

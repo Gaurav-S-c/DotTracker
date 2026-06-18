@@ -5,7 +5,7 @@ import supabase from '../src/supabase-client.js'
 import { protect } from '../middleware/authMiddleware.js'
 
 const resumeRouter =express.Router()
-const upload =multer ({storage:multer.memoryStorage()})
+const upload =multer ({storage:multer.memoryStorage(),limits:{filesize:5*1024*1024}})
 
 const require = createRequire(import.meta.url)
 const pdfParse = require('pdf-parse')
@@ -14,21 +14,12 @@ resumeRouter.use(protect)
 
 resumeRouter.post('/upload',upload.single('resume'),async(req,res)=>{
     try{
-        console.log('Upload route hit')
-
         const file=req.file
-
-        console.log('File:', file?.originalname)
-
         if(!file) return res.status(400).json({error:'No file uploaded'})
         if(file.mimetype !=='application/pdf'){
             return res.status(400).json({error:'Only PDF files allowed'})
         }
-
-        const pdfData = await pdfParse(file.buffer)
-
-        console.log('PDF parsed successfully')
-        
+        const pdfData = await pdfParse(file.buffer) 
         const text=pdfData.text
 
         const fileName=`${req.user.id}/${Date.now()}.pdf`
@@ -61,6 +52,18 @@ resumeRouter.get('/signed-url',async (req,res)=>{
     }catch (err) {
     res.status(500).json({ error: err.message })
   }
+})
+
+resumeRouter.post('/parse',upload.single('resume'),async(req,res)=>{
+    try{
+        const file =req.file
+        if(!file) return res.status(400).json({error:'No file uploaded'})
+        
+        const pdfData=await pdfParse(file.buffer)
+        res.json({text:pdfData.text})
+    }catch(err){
+        res.status(500).json({error:err.message})
+    }
 })
 
 export default resumeRouter

@@ -58,8 +58,51 @@ export default function Applications(){
         setJobs(prev=>prev.filter(j=>j.id.toString()!==jobId.toString()))
     }
 
+    function ApplicationTableSkeleton() {
+        return (
+            <div className="rounded-2xl border border-gray-400 shadow-sm overflow-hidden mt-5 animate-pulse">
+                <div className="bg-[#F7F3FD] border-b border-gray-300 h-12"></div>
+
+                {Array.from({ length: 7 }).map((_, i) => (
+                    <div
+                        key={i}
+                        className="grid grid-cols-8 gap-4 px-5 py-4 border-b border-gray-200"
+                    >
+                        <div className="h-4 bg-gray-200 rounded"></div>
+                        <div className="h-4 bg-gray-200 rounded"></div>
+                        <div className="h-4 bg-gray-200 rounded"></div>
+                        <div className="h-4 bg-gray-200 rounded"></div>
+                        <div className="h-4 bg-gray-200 rounded"></div>
+                        <div className="h-4 bg-gray-200 rounded"></div>
+                        <div className="h-4 bg-gray-200 rounded"></div>
+                        <div className="flex gap-2">
+                            <div className="w-7 h-7 bg-gray-200 rounded-lg"></div>
+                            <div className="w-7 h-7 bg-gray-200 rounded-lg"></div>
+                        </div>
+                    </div>
+                ))}
+
+                <div className="h-12 bg-gray-50"></div>
+            </div>
+        )
+    }
+
     if(loading)return (
-        <p className="text-center mt-8">Loading Applications...</p>
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.25 }}
+        >
+            <ApplicationHeader
+                search=""
+                onSearch={() => {}}
+                statusFilter="all"
+                onFilter={() => {}}
+                onAddNew={() => {}}
+            />
+
+            <ApplicationTableSkeleton />
+        </motion.div>
     )
 
     return(
