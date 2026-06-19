@@ -1,12 +1,18 @@
-import { useState,useRef } from "react"
-import {Wand2, Rocket, Briefcase, FileText, Upload, Clock,Sparkles,AlertCircle,Zap,CheckCircle,Target,Star} from 'lucide-react'
+import { useState,useRef,useEffect } from "react"
+import {Wand2, Rocket, Briefcase, FileText, Upload, Clock,Sparkles,AlertCircle,Zap,CheckCircle,Target,Star,ThumbsUp, ThumbsDown, Code, Wrench, MessageSquareQuote} from 'lucide-react'
 import { motion } from "framer-motion"
-import { useParams } from "react-router-dom"
+import { useParams,useLocation } from "react-router-dom"
 
 export default function ResumeTailor(){
+
+    const location =useLocation()
+
     const [jdText,setJdText]=useState('')
     const [resumeFile,setResumeFile]=useState(null)
     const [loading,setLoading]=useState(false)
+    const [prefilledResumeText, setPrefilledResumeText]=useState(null)  
+    const [prefilledResumeName, setPrefilledResumeName]=useState('')   
+    const [loadingPrefill, setLoadingPrefill] = useState(false)      
     const [status,setStatus]=useState('waiting')
     const [result,setResult]=useState(null)
     const [error,setError]=useState('')
@@ -22,29 +28,71 @@ export default function ResumeTailor(){
         }
         }
 
+    useEffect(() => {
+        async function loadPrefill() {
+        const state = location.state
+        if (!state) return
+        if (state.jdText) {
+            setJdText(state.jdText)
+        }
+        if (state.resumePath) {
+            setLoadingPrefill(true)
+            try {
+            const token    = localStorage.getItem('token')
+            const response = await fetch(
+                `http://localhost:3000/api/resume/parse-by-path?path=${state.resumePath}`,
+                { headers: { 'Authorization': `Bearer ${token}` } }
+            )
+            const data = await response.json()
+            if (response.ok) {
+                setPrefilledResumeText(data.text)
+                setPrefilledResumeName('Resume from this application')
+            }
+            } catch (err) {
+            console.error('Failed to load resume:', err)
+            } finally {
+            setLoadingPrefill(false)
+            }
+        }
+        }
+        loadPrefill()
+    }, [location.state])
+
+    
+
     async function handleTailor(){
         if(!jdText.trim()) return setError('Please paste a job description.')
-        if(!resumeFile) return setError('Please upload your resume PDF.')
+        if(!resumeFile && !prefilledResumeText) return setError('Please upload your resume PDF.')
         setError('')
         setResult(null)
         setLoading(true)
 
         try{
             const token =localStorage.getItem('token')
+            let resumeText = prefilledResumeText
 
-            setStatus('parsing')
-            const pdfForm=new FormData()
-            pdfForm.append('resume',resumeFile)
+            if(resumeFile){
+                setStatus('parsing')
+                const pdfForm=new FormData()
+                pdfForm.append('resume',resumeFile)
+    
+                const parseResponse=await fetch ('http://localhost:3000/api/resume/parse',{
+                    method:'POST',
+                    headers:{'Authorization':`Bearer ${token}`},
+                    body:pdfForm
+                })
+    
+                const parseData=await parseResponse.json()
+    
+                if(!parseResponse.ok){
+                    setError(parseData.error || 'Failed to parse the resume')
+                    setStatus('error')
+                    return
+                }
+                resumeText = parseData.text
+            }
 
-            const parseResponse=await fetch ('http://localhost:3000/api/resume/parse',{
-                method:'POST',
-                headers:{'Authorization':`Bearer ${token}`},
-                body:pdfForm
-            })
-
-            const parseData=await parseResponse.json()
-
-            if (!parseData.text || !parseData.text.trim()) {
+            if (!resumeText || !resumeText.trim()) {
                 setError(
                     'No readable text found in the PDF. Please upload a text-based resume PDF.'
                 )
@@ -52,14 +100,6 @@ export default function ResumeTailor(){
                 setLoading(false)
                 return
             }
-
-            if(!parseResponse.ok){
-                setError(parseData.error || 'Failed to parse the resume')
-                setStatus('error')
-                return
-            }
-
-            console.log(parseData.text)
 
             setStatus('analyzing')
             const aiResponse=await fetch('http://localhost:3000/api/ai/tailor',{
@@ -70,7 +110,7 @@ export default function ResumeTailor(){
                 },
                 body:JSON.stringify({
                     jd_text:jdText,
-                    resume_text:parseData.text
+                    resume_text:resumeText
                 })
             })
             const aiData = await aiResponse.json()
@@ -162,7 +202,13 @@ export default function ResumeTailor(){
                         className="flex flex-col items-center bg-white justify-center border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-[#4A00C9] hover:bg-gray-50 transition-colors"
                         style={{ minHeight: '200px' }}
                     >
-                        {resumeFile ? (
+                        {loadingPrefill ? (
+                            <div className="text-center p-6">
+                                <div className="w-8 h-8 rounded-full border-3 border-purple-100 border-t-[#4A00C9] animate-spin mx-auto mb-3"/>
+                                <p className="text-sm text-gray-500">Loading resume from application...</p>
+                            </div>
+                        ):
+                        resumeFile ? (
                             <div className="text-center p-4">
                             <FileText size={32} className="stroke-[#4A00C9] mx-auto mb-2"/>
                             <p className="text-sm font-medium text-[#4A00C9]">{resumeFile.name}</p>
@@ -176,7 +222,13 @@ export default function ResumeTailor(){
                             Remove
                             </button>
                         </div>
-                        ) : (
+                        ) : prefilledResumeText ?(
+                            <div className="text-center p-4">
+                                <CheckCircle size={32} className="stroke-green-500 mx-auto mb-2"/>
+                                <p className="text-sm font-medium text-green-600">{prefilledResumeName}</p>
+                                <p className="text-xs text-gray-400 mt-1">Click to upload a different file instead</p>
+                            </div>
+                        ):(
                             <div className="text-center p-6">
                             <Upload size={32} className="stroke-gray-300 mx-auto mb-3"/>
                             <p className="text-sm font-medium text-gray-600">
@@ -317,6 +369,42 @@ export default function ResumeTailor(){
                         )}
 
                         <div className="grid grid-cols-2 gap-4">
+                            {result.strengths?.length > 0 && (
+                                <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <ThumbsUp size={22} className="stroke-green-500"/>
+                                    <h3 className="font-semibold text-gray-800 text-lg">Strengths</h3>
+                                </div>
+                                <div className="space-y-2">
+                                    {result.strengths.map((item, i) => (
+                                    <div key={i} className="flex items-start gap-2 bg-green-50 shadow-sm rounded-xl px-3 py-2">
+                                        <CheckCircle size={14} className="stroke-green-500 mt-0.5 shrink-0"/>
+                                        <p className="text-sm text-gray-700">{item}</p>
+                                    </div>
+                                    ))}
+                                </div>
+                                </div>
+                            )}
+
+                            {result.weaknesses?.length > 0 && (
+                                <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <ThumbsDown size={22} className="stroke-red-400"/>
+                                    <h3 className="font-semibold text-gray-800 text-lg">Weaknesses</h3>
+                                </div>
+                                <div className="space-y-2">
+                                    {result.weaknesses.map((item, i) => (
+                                    <div key={i} className="flex items-start gap-2 bg-red-50 shadow-sm rounded-xl px-3 py-2">
+                                        <AlertCircle size={14} className="stroke-red-400 mt-0.5 shrink-0"/>
+                                        <p className="text-sm text-gray-700">{item}</p>
+                                    </div>
+                                    ))}
+                                </div>
+                                </div>
+                            )}
+                            </div>
+
+                        <div className="grid grid-cols-2 gap-4">
                             {result.keywords_to_add?.length > 0 && (
                                 <div>
                                 <div className="flex items-center gap-2 mb-3">
@@ -348,7 +436,41 @@ export default function ResumeTailor(){
                                 </div>
                                 </div>
                             )}
-                        </div>    
+                        </div> 
+
+                        <div className="grid grid-cols-2 gap-4">
+                            {result.technical_skills_missing?.length > 0 && (
+                                <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <Code size={22} className="stroke-orange-500"/>
+                                    <h3 className="font-semibold text-gray-800 text-lg">Technical Skills Missing</h3>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {result.technical_skills_missing.map((skill, i) => (
+                                    <span key={i} className="px-3 py-1 rounded-full bg-orange-50 text-orange-600 text-xs font-medium border border-orange-200 shadow-sm">
+                                        {skill}
+                                    </span>
+                                    ))}
+                                </div>
+                                </div>
+                            )}
+
+                            {result.tools_and_frameworks_missing?.length > 0 && (
+                                <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <Wrench size={22} className="stroke-indigo-500"/>
+                                    <h3 className="font-semibold text-gray-800 text-lg">Tools & Frameworks Missing</h3>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {result.tools_and_frameworks_missing.map((tool, i) => (
+                                    <span key={i} className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-medium border border-indigo-200 shadow-sm">
+                                        {tool}
+                                    </span>
+                                    ))}
+                                </div>
+                                </div>
+                            )}
+                            </div>   
 
                         {result.skills_to_highlight?.length > 0 && (
                             <div>
@@ -385,6 +507,20 @@ export default function ResumeTailor(){
                                     </div>
                                     </div>
                                 ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {result.recruiter_feedback && (
+                            <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                <MessageSquareQuote size={22} className="stroke-[#4A00C9]"/>
+                                <h3 className="font-semibold text-xl text-gray-800">Recruiter Feedback</h3>
+                                </div>
+                                <div className="bg-purple-50 border-l-4 border-[#4A00C9] rounded-xl px-5 py-4 shadow-sm">
+                                <p className="text-gray-700 text-md leading-relaxed italic">
+                                    "{result.recruiter_feedback}"
+                                </p>
                                 </div>
                             </div>
                         )}

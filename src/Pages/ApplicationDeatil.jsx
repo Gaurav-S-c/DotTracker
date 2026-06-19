@@ -298,7 +298,7 @@ export default function ApplicationDetail(){
                     <span>Back to applications.</span>
                 </button>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 ml-40 max-h-[95vh] mb-5 ">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 ml-40 mb-5 ">
                 {error && (
                     <p className="text-red-500 text-sm bg-red-100 px-4 py-2 rounded-xl mb-3">
                         {error}
@@ -491,7 +491,7 @@ export default function ApplicationDetail(){
                     </div>
                 </div>
 
-                <div className="bg-gray-50 rounded-xl p-3 col-span-2 mb-5 shadow-sm">
+                <div className="bg-gray-50 rounded-xl p-3 col-span-2 mb-5 shadow-sm overflow-y-scroll max-h-30">
                     <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
                         Job Description
                     </p>
@@ -533,7 +533,13 @@ export default function ApplicationDetail(){
                 <div className="flex justify-between items-center">
                     <div className="flex justify-center">
                         <button
-                        onClick={()=>{navigate(`/dashboard/resume-tailor`)}}
+                        onClick={()=>{navigate(`/dashboard/resume-tailor`,{
+                            state:{
+                                jdText:job.jd_text,
+                                resumePath:job.resume_path
+                            }
+                        })
+                        }}
                         className="flex items-center gap-2 px-8 py-3 rounded-full bg-[#4A00C9] text-white font-semibold text-md cursor-pointer transition-opacity shadow-lg hover:scale-110 "
                         >
                         <Wand2 size={18}/>

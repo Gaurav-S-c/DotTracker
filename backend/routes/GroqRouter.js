@@ -16,6 +16,7 @@ groqRouter.post('/tailor',async (req,res)=>{
     try{
         const completion = await groq.chat.completions.create({
             model:'llama-3.3-70b-versatile',
+            response_format:{ type:'json_object' },
             max_tokens:1500,
             messages: [
         {
@@ -52,13 +53,18 @@ groqRouter.post('/tailor',async (req,res)=>{
             {
             "match_score": <number 0-100>,
             "summary": "<2 sentence overview of how well resume fits>",
+            "strengths": ["strength1", "strength2", "strength3"],
+            "weaknesses": ["weakness1", "weakness2", "weakness3"],
             "keywords_to_add": ["keyword1", "keyword2", "keyword3"],
             "keywords_missing": ["missing1", "missing2"],
+            "technical_skills_missing": ["skill1", "skill2"],
+            "tools_and_frameworks_missing": ["tool1", "tool2"],
             "bullet_improvements": [
                 { "original": "original bullet point", "improved": "improved version" }
             ],
             "skills_to_highlight": ["skill1", "skill2"],
-            "quick_wins": ["quick tip 1", "quick tip 2", "quick tip 3"]
+            "quick_wins": ["quick tip 1", "quick tip 2", "quick tip 3"],
+            "recruiter_feedback": "<a short 2-3 sentence paragraph written in the voice of a recruiter giving honest, direct feedback on this resume for this specific role>"
             }`
                 }
             ]
@@ -66,7 +72,16 @@ groqRouter.post('/tailor',async (req,res)=>{
 
         const text =completion.choices[0].message.content
         const cleaned = text.replace(/```json|```/g,'').trim()
-        const result =JSON.parse(cleaned)
+        let result
+
+        try{
+            result = JSON.parse(cleaned)
+        }
+        catch(err){
+            return res.status(500).json({
+                error:'AI returned invalid JSON'
+            })
+        }
 
         res.json(result)  
     }

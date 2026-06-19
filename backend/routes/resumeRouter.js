@@ -66,4 +66,26 @@ resumeRouter.post('/parse',upload.single('resume'),async(req,res)=>{
     }
 })
 
+resumeRouter.get('/parse-by-path', async (req, res) => {
+  const { path } = req.query
+  if (!path) return res.status(400).json({ error: 'Path is required' })
+
+  try {
+    const { data, error } = await supabase.storage
+      .from('resumes')
+      .download(path)
+
+    if (error) return res.status(400).json({ error: error.message })
+
+    const buffer = Buffer.from(await data.arrayBuffer())
+
+    const pdfData = await pdfParse(buffer)
+
+    res.json({ text: pdfData.text })
+
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
 export default resumeRouter
