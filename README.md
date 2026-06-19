@@ -2,7 +2,7 @@
 
 A modern AI-powered Job Application Tracker that helps job seekers organize applications, track progress, manage resumes, and optimize resumes for specific job descriptions using AI.
 
-🔗 **Live Demo:** [Add Your Website URL Here](https://dot-tracker-gamma.vercel.app/)
+🔗 **Live Demo:** [https://dot-tracker-gamma.vercel.app/]
 
 ---
 
