@@ -1,4 +1,4 @@
-import { Sparkles,SquareKanban,ClipboardList, FileSearch ,FileText,Goal,LogOut} from "lucide-react"
+import { Sparkles,SquareKanban,ClipboardList, Wand2 ,FileText,Goal,LogOut} from "lucide-react"
 import {Link,useNavigate} from "react-router-dom"
 import { useState } from "react"
 import { motion } from "framer-motion"
@@ -91,10 +91,10 @@ const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'))
                         </div>
                         <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-xl text-center">
                             <div className="w-16 h-16 mx-auto rounded-full bg-[#F2EDFD] flex items-center justify-center">
-                                <FileSearch className="text-[#461ADA]" size={30}/>
+                                <Wand2 className="text-[#461ADA]" size={30}/>
                             </div>
-                            <h3 className="text-xl font-semibold mt-6">Application Details</h3>
-                            <p className="text-gray-500 mt-4">Store job descriptions, application links, recruiter contacts, and personal notes for every application.</p>
+                            <h3 className="text-xl font-semibold mt-6">Resume Tailor</h3>
+                            <p className="text-gray-500 mt-4">Upload a resume and job description to receive AI-powered recommendations tailored to the role.</p>
                         </div>
                     </div>
                 </section>

@@ -7,7 +7,9 @@ import resumeRouter from "../routes/resumeRouter.js"
 import groqRouter from "../routes/GroqRouter.js"
 
 const app=express()
-const PORT=3000
+
+dotenv.config()
+const PORT = process.env.PORT || 3000
 
 app.use(cors())
 app.use(express.json())
@@ -18,7 +20,7 @@ app.use('/api/resume',resumeRouter)
 app.use('/api/ai',groqRouter)
  
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 }).on('error', (err) => {
   console.error('Failed to start server:', err)
 }) 
