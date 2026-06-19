@@ -8,8 +8,8 @@ export default function DeleteAppsModal({onClose,onSuccess}){
     async function handleDelete() {
     setDeleting(true)
         try {
-        const token    = localStorage.getItem('token')
-        const response = await fetch('http://localhost:3000/api/dashboard/delete-all', {
+        const token = localStorage.getItem('token')
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard/delete-all`, {
             method:  'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         })

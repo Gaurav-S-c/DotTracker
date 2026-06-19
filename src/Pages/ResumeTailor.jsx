@@ -40,7 +40,7 @@ export default function ResumeTailor(){
             try {
             const token    = localStorage.getItem('token')
             const response = await fetch(
-                `http://localhost:3000/api/resume/parse-by-path?path=${state.resumePath}`,
+                `${import.meta.env.VITE_API_URL}/api/resume/parse-by-path?path=${state.resumePath}`,
                 { headers: { 'Authorization': `Bearer ${token}` } }
             )
             const data = await response.json()
@@ -76,7 +76,7 @@ export default function ResumeTailor(){
                 const pdfForm=new FormData()
                 pdfForm.append('resume',resumeFile)
     
-                const parseResponse=await fetch ('http://localhost:3000/api/resume/parse',{
+                const parseResponse=await fetch (`${import.meta.env.VITE_API_URL}/api/resume/parse`,{
                     method:'POST',
                     headers:{'Authorization':`Bearer ${token}`},
                     body:pdfForm
@@ -102,7 +102,7 @@ export default function ResumeTailor(){
             }
 
             setStatus('analyzing')
-            const aiResponse=await fetch('http://localhost:3000/api/ai/tailor',{
+            const aiResponse=await fetch(`${import.meta.env.VITE_API_URL}/api/ai/tailor`,{
                 method: 'POST',
                 headers:{
                     'Content-type':'application/json',

@@ -155,7 +155,7 @@ export default function KanbanBoard({ onCountsChange ,setDashboardLoading }){
         async function fetchJobs(){
             try{
                 const token=localStorage.getItem('token')
-                const response=await fetch('http://localhost:3000/api/dashboard',{
+                const response=await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard`,{
                     headers:{'Authorization':`Bearer ${token}`}
                 })
                 const data=await response.json()
@@ -187,7 +187,7 @@ export default function KanbanBoard({ onCountsChange ,setDashboardLoading }){
 
         try{
             const token=localStorage.getItem('token')
-            await fetch(`http://localhost:3000/api/dashboard/${jobId}`,{
+            await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard/${jobId}`,{
                 method:'PATCH',
                 headers:{
                     'Content-Type':'application/json',
@@ -203,7 +203,7 @@ export default function KanbanBoard({ onCountsChange ,setDashboardLoading }){
     async function handleDelete(jobId){
         try{
             const token=localStorage.getItem('token')
-            const response=await fetch(`http://localhost:3000/api/dashboard/${jobId}`,{
+            const response=await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard/${jobId}`,{
                 method:'DELETE',
                 headers:{'Authorization':`Bearer ${token}`}
             })

@@ -119,8 +119,6 @@ const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'))
                     <p className="text-[#494456] font-medium">@2026 DotTracker All rights reserved</p>
                 </div>
             </footer>
-        </motion.div
-        
-        >
+        </motion.div>
     )
 }

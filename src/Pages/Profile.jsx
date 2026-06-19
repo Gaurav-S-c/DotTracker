@@ -50,7 +50,7 @@ export default function Profile(){
         async function fetchStats(){
             try{
                 const token=localStorage.getItem('token')
-                const response=await fetch('http://localhost:3000/api/dashboard',{
+                const response=await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard`,{
                     headers:{'Authorization':`Bearer ${token}`}
                 })
                 const data=await response.json()
@@ -73,7 +73,7 @@ export default function Profile(){
         setSavingName(true)
         try{    
             const token =localStorage.getItem('token')
-            const response=await fetch('http://localhost:3000/api/auth/update-name',{
+            const response=await fetch(`${import.meta.env.VITE_API_URL}/api/auth/update-name`,{
                 method:'PATCH',
                 headers:{
                     'content-type':'application/json',

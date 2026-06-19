@@ -23,7 +23,6 @@ export default function App(){
     const token = localStorage.getItem('token')
     if (!token) return
 
-    // set the session in Supabase client so it can manage refresh
     const { error } = await supabase.auth.setSession({
       access_token:  token,
       refresh_token: localStorage.getItem('refresh_token') || ''

@@ -69,7 +69,7 @@ export default function ApplicationDetail(){
         async function fetchJob(){
             try{
                 const token=localStorage.getItem('token')
-                const response =await fetch('http://localhost:3000/api/dashboard',{
+                const response =await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard`,{
                     headers:{'Authorization':`Bearer ${token}`}
                 })
                 const data=await response.json()
@@ -117,7 +117,7 @@ export default function ApplicationDetail(){
             const pdfForm=new FormData()
             pdfForm.append('resume',file)
 
-            const response =await fetch('http://localhost:3000/api/resume/upload',{
+            const response =await fetch(`${import.meta.env.VITE_API_URL}/api/resume/upload`,{
                 method:'POST',
                 headers:{'Authorization':`Bearer ${token}`},
                 body:pdfForm
@@ -144,7 +144,7 @@ export default function ApplicationDetail(){
         try {
             const token    = localStorage.getItem('token')
             const response = await fetch(
-            `http://localhost:3000/api/resume/signed-url?path=${job.resume_path}`,
+            `${import.meta.env.VITE_API_URL}/api/resume/signed-url?path=${job.resume_path}`,
             { headers: { 'Authorization': `Bearer ${token}` } }
             )
             const data = await response.json()
@@ -163,7 +163,7 @@ export default function ApplicationDetail(){
         setError('')
         try{
             const token    = localStorage.getItem('token')
-            const response = await fetch(`http://localhost:3000/api/dashboard/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard/${id}`, {
                 method:  'PATCH',
                 headers: {
                 'Content-Type':  'application/json',
@@ -206,7 +206,7 @@ export default function ApplicationDetail(){
         setDeleting(true)
         try{
             const token    = localStorage.getItem('token')
-            const response = await fetch(`http://localhost:3000/api/dashboard/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard/${id}`, {
                 method:  'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             })

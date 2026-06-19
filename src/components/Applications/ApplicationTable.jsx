@@ -25,7 +25,7 @@ export default function ApplicationTable({jobs,onDelete,currentPage,setCurrentPa
         setDeleting(true)
         try{
             const token=localStorage.getItem('token')
-            const response=await fetch(`http://localhost:3000/api/dashboard/${jobId}`,{
+            const response=await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard/${jobId}`,{
                 method:'DELETE',
                 headers:{'Authorization':`Bearer ${token}`}
             })

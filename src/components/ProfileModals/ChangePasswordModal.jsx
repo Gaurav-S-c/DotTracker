@@ -15,7 +15,7 @@ export default function ChangePasswordModal({onClose}){
 
         try{
             const token=localStorage.getItem('token')
-            const response =await fetch('http://localhost:3000/api/auth/change-password',{
+            const response =await fetch(`${import.meta.env.VITE_API_URL}/api/auth/change-password`,{
                 method:'PATCH',
                 headers:{
                     'Content-type':"application/json",

@@ -8,7 +8,7 @@ export default function Sidebar() {
     try{
         const token =localStorage.getItem('token')
 
-        await fetch('http://localhost:3000/api/auth/logout',{
+        await fetch(`${import.meta.env.VITE_API_URL}/api/auth/logout`,{
           method:'POST',
           headers:{
             'Authorization':`Bearer ${token}`

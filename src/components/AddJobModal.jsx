@@ -46,7 +46,7 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                 const pdfForm=new FormData()
                 pdfForm.append('resume',resumeFile)
 
-                const pdfResponse=await fetch('http://localhost:3000/api/resume/upload',{
+                const pdfResponse=await fetch(`${import.meta.env.VITE_API_URL}/api/resume/upload`,{
                     method:'POST',
                     headers:{'Authorization':`Bearer ${token}`},
                     body:pdfForm
@@ -61,7 +61,7 @@ export default function AddJobModal({showModal,setShowModal,selectedColumn,setjo
                 setResumeUploaded(true)
             }
 
-            const response=await fetch('http://localhost:3000/api/dashboard',{
+            const response=await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard`,{
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json',
